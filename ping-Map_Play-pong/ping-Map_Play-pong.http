@@ -1,0 +1,6 @@
+@ping_Map_Play_pong_HostAddress = http://localhost:5014
+
+GET {{ping_Map_Play_pong_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
