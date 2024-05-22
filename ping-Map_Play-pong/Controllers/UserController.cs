@@ -5,7 +5,7 @@ using ping_Map_Play_pong.Service.Repositories;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/users")]
 
 public class UserController : ControllerBase
 {
@@ -18,9 +18,10 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpGet("users")]
+    [HttpGet("users/{id}")]
     public ActionResult<IEnumerable<User>> Get()
     {
+        _logger.LogInformation("fetch from frontend");
         return Ok(_userRepository.GetAll());
     }
 }
