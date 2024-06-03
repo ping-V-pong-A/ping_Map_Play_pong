@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
         <RootNamespace>ping_Map_Play_pong</RootNamespace>
+        <UserSecretsId>94b42272-58d1-40c5-9e40-b15c75ec8d0a</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
