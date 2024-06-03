@@ -1,3 +1,5 @@
+using ping_Map_Play_pong.Model.DataModels;
+
 namespace ping_Map_Play_pong.Model.Matches;
 
 public abstract class MatchBase

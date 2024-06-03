@@ -1,4 +1,6 @@
-namespace ping_Map_Play_pong.Model;
+using ping_Map_Play_pong.Model.Matches;
+
+namespace ping_Map_Play_pong.Model.DataModels;
 
 public class Table
 {
@@ -7,11 +9,11 @@ public class Table
     public Coordinate Coordinate { get; set; }
 
     public List<CheckingIn> CheckingIns { get; }
-    public List<Match>LeaderBoard { get; }
+    public List<MatchBase>LeaderBoard { get; }
 
     public Table()
     {
         CheckingIns = new List<CheckingIn>();
-        LeaderBoard = new List<Match>();
+        LeaderBoard = new List<MatchBase>();
     }
 }
