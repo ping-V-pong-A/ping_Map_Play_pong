@@ -1,19 +1,18 @@
-using ping_Map_Play_pong.Model.Matches;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ping_Map_Play_pong.Model.DataModels;
 
 public class Table
 {
+    [Key]
     public int Id { get; set; }
     public string Name { get; set; }
+
+    [DeleteBehavior(DeleteBehavior.NoAction)]
     public Coordinate Coordinate { get; set; }
-
-    public List<CheckingIn> CheckingIns { get; }
-    public List<MatchBase>LeaderBoard { get; }
-
-    public Table()
-    {
-        CheckingIns = new List<CheckingIn>();
-        LeaderBoard = new List<MatchBase>();
-    }
+    
+    public ICollection<CheckingIn> CheckingIns { get; set; }
+    public ICollection<Match> LeaderBoard { get; set; }
+    public ICollection<PairMatch> PairMatchesLeaderBoard { get; set; }
 }

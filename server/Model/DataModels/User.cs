@@ -6,12 +6,15 @@ namespace ping_Map_Play_pong.Model;
 
 public class User
 {
-    public int Id { get; set; }
+    [Key]
+    public int Id { get; init; }
+    public string Name { get; init; }
     [Required]
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public DateTime RegistrationDate { get; set; }
-    public List<Table> CheckedInTables { get; }
-    public Rank Rank { get; set; }
+    public string Email { get; init; }
+    public string Password { get; init; }
+    public DateTime RegistrationDate { get; init; }
+    
+    public ICollection<Table> CheckedInTables { get; init; }
+    
+    public Rank Rank { get; init; }
 }
