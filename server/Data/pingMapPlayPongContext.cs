@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
-}
 namespace ping_Map_Play_pong.Data;
 
 public class pingMapPlayPongContext : DbContext
