@@ -16,12 +16,17 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public void Register(string username, string email)
+    public User GetByName(string userName)
     {
         throw new NotImplementedException();
     }
 
-    public void Edit(int id)
+    public void Add(string username, string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Update(int id)
     {
         throw new NotImplementedException();
     }
