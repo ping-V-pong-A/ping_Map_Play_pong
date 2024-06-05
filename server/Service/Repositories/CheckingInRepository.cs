@@ -6,6 +6,11 @@ namespace ping_Map_Play_pong.Service.Repositories;
 public class CheckingInRepository : ICheckingInRepository
 {
     private pingMapPlayPongContext _dbContext;
+
+    public CheckingIn GetById(int checkingInId)
+    {
+        return _dbContext.CheckingIns.FirstOrDefault(c => c.Id == checkingInId);
+    }
     
     public CheckingInRepository(pingMapPlayPongContext context)
     {
@@ -31,15 +36,19 @@ public class CheckingInRepository : ICheckingInRepository
     {
         return _dbContext.CheckingIns.Where(c => c.User.Id == userId && c.StartDate.Date == date);
     }
-    
-  
 
+
+    
     public CheckingIn GetByUserIdAndStartDateTime(int userId, DateTime startDateTime)
     {
-        return _dbContext.CheckingIns.FirstOrDefault(c => c.User.Id == userId && c.StartDate == startDateTime);
+        return _dbContext.CheckingIns.FirstOrDefault(c => c.User.Id == userId &&
+                                                          c.StartDate.Year == startDateTime.Year &&
+                                                          c.StartDate.Month == startDateTime.Month &&
+                                                          c.StartDate.Day == startDateTime.Day &&
+                                                          c.StartDate.Hour == startDateTime.Hour &&
+                                                          c.StartDate.Minute == startDateTime.Minute);
     }
-    
- 
+
 
 
     public void Add(CheckingIn checkingIn)
@@ -61,4 +70,5 @@ public class CheckingInRepository : ICheckingInRepository
         _dbContext.Update(checkingIn);
         _dbContext.SaveChanges();
     }
+    
 }
