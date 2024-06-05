@@ -17,9 +17,9 @@ public class UserRepository : IUserRepository
         return _dbContext.Users.ToList();
     }
 
-    public User GetById(int id)
+    public User GetById(int userId)
     {
-        return _dbContext.Users.FirstOrDefault(u => u.Id == id);
+        return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
     }
 
     public User GetByName(string userName)
@@ -36,6 +36,12 @@ public class UserRepository : IUserRepository
     public void Update(User user)
     {
         _dbContext.Update(user);
+        _dbContext.SaveChanges();
+    }
+
+    public void Delete(User user)
+    {
+        _dbContext.Remove(user);
         _dbContext.SaveChanges();
     }
 }
