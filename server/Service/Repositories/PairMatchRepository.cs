@@ -3,7 +3,7 @@ using ping_Map_Play_pong.Model.DataModels;
 
 namespace ping_Map_Play_pong.Service.Repositories;
 
-public class PairMatchRepository
+public class PairMatchRepository : IPairMatchRepository
 {
     private pingMapPlayPongContext _dbContext;
 
