@@ -97,6 +97,7 @@ namespace ping_Map_Play_pong.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     TableId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -108,6 +109,12 @@ namespace ping_Map_Play_pong.Migrations
                         name: "FK_CheckingIns_Tables_TableId",
                         column: x => x.TableId,
                         principalTable: "Tables",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CheckingIns_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -184,6 +191,11 @@ namespace ping_Map_Play_pong.Migrations
                 name: "IX_CheckingIns_TableId",
                 table: "CheckingIns",
                 column: "TableId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CheckingIns_UserId",
+                table: "CheckingIns",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matches_Player1Id",

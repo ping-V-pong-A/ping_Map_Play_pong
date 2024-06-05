@@ -39,9 +39,14 @@ namespace ping_Map_Play_pong.Migrations
                     b.Property<int>("TableId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TableId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CheckingIns");
                 });
@@ -234,7 +239,15 @@ namespace ping_Map_Play_pong.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ping_Map_Play_pong.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Table");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ping_Map_Play_pong.Model.DataModels.Match", b =>
