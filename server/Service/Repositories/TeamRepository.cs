@@ -12,7 +12,10 @@ public class TeamRepository : ITeamRepository
         _dbContext = context;
     }
 
-
+    public Team GetById(int teamId)
+    {
+        return _dbContext.Teams.FirstOrDefault(t => t.Id == teamId);
+    }
     public IEnumerable<Team> GetAll()
     {
         return _dbContext.Teams.ToList();
