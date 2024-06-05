@@ -12,7 +12,7 @@ public class User
     [Required]
     public string Email { get; init; }
     public string Password { get; init; }
-    public DateTime RegistrationDate { get; init; }
+    public DateTime RegistrationDate { get; init; } = DateTime.Now;
     
     public ICollection<Table> CheckedInTables { get; init; }
     
