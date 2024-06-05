@@ -61,11 +61,19 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("users/register")]
-    public ActionResult<string> Post(string userName, string email)
+    public ActionResult<string> Post(string userName, string email, string password)
     {
         try
         {
-            _userRepository.Add(userName, email);
+            var newUser = new User
+            {
+                Name = userName,
+                Email = email,
+                Password = password,
+                Rank = 0
+            };
+            
+            _userRepository.Add(newUser);
             
             return Ok("success registering");
         }
@@ -81,7 +89,9 @@ public class UserController : ControllerBase
     {
         try
         {
-            _userRepository.Update(userId);
+            var user = _userRepository.GetById(userId);
+            
+            _userRepository.Update(user);
             return Ok("successful update");
         }
         catch (Exception e)
