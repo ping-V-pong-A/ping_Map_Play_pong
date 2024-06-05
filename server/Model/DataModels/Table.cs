@@ -6,13 +6,13 @@ namespace ping_Map_Play_pong.Model.DataModels;
 public class Table
 {
     [Key]
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public int Id { get; init; }
+    public string Name { get; init; }
 
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public Coordinate Coordinate { get; set; }
+    public Coordinate Coordinate { get; init; }
     
-    public ICollection<CheckingIn> CheckingIns { get; set; }
-    public ICollection<Match> LeaderBoard { get; set; }
-    public ICollection<PairMatch> PairMatchesLeaderBoard { get; set; }
+    public ICollection<CheckingIn> CheckingIns { get; init; }
+    public ICollection<Match> LeaderBoard { get; init; }
+    public ICollection<PairMatch> PairMatchesLeaderBoard { get; init; }
 }
