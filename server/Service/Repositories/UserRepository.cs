@@ -1,33 +1,41 @@
+using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Model;
 
 namespace ping_Map_Play_pong.Service.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly List<User> _users = [];
+    private pingMapPlayPongContext _dbContext;
+
+    public UserRepository(pingMapPlayPongContext context)
+    {
+        _dbContext = context;
+    }
     
     public IEnumerable<User> GetAll()
     {
-        return _users;
+        return _dbContext.Users.ToList();
     }
 
     public User GetById(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.Users.FirstOrDefault(u => u.Id == id);
     }
 
     public User GetByName(string userName)
     {
-        throw new NotImplementedException();
+        return _dbContext.Users.FirstOrDefault(u => u.Name == userName);
     }
 
-    public void Add(string username, string email)
+    public void Add(User user)
     {
-        throw new NotImplementedException();
+        _dbContext.Add(user);
+        _dbContext.SaveChanges();
     }
 
-    public void Update(int id)
+    public void Update(User user)
     {
-        throw new NotImplementedException();
+        _dbContext.Update(user);
+        _dbContext.SaveChanges();
     }
 }
