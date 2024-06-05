@@ -30,7 +30,7 @@ public class PairMatchRepository
 
     public IEnumerable<PairMatch> GetByDate(DateTime date)
     {
-        return _dbContext.PairMatches.Where(pm => pm.StartDate == date);
+        return _dbContext.PairMatches.Where(pm => pm.StartDate.Date == date);
     }
 
 
