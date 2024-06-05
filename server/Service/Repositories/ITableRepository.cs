@@ -6,6 +6,9 @@ namespace ping_Map_Play_pong.Service.Repositories;
 public interface ITableRepository
 {
     IEnumerable<Table> GetAll();
-    Table GetTableByName(int id);
-    void AddTable(Table table);
+    Table GetByTableName(string tableName);
+    Table GetByTableId(int tableId);
+    void Add(Table table);
+    void Delete(Table table);
+    void Update(Table table);
 }

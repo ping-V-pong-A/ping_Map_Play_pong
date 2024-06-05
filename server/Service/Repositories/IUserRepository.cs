@@ -6,7 +6,7 @@ public interface IUserRepository
 {
     IEnumerable<User> GetAll();
     User GetById(int id);
-    void Register(string username, string email);
-    void Edit(int id);
-    
+    User GetByName(string userName);
+    void Add(string userName, string email);
+    void Update(int userId);
 }

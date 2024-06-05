@@ -16,5 +16,8 @@ public class User
     
     public ICollection<Table> CheckedInTables { get; init; }
     
+    // TODO 
+    // add favorite tables
+    
     public Rank Rank { get; init; }
 }
