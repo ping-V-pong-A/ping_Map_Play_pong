@@ -13,8 +13,11 @@ public class MatchRepository
     {
         _dbContext = context;
     }
-    
-    
+
+    public IEnumerable<Match> GetAll()
+    {
+        return _dbContext.Matches.ToList();
+    }
     IEnumerable<Match> GetByTableId(int tableId)
     {
         return _dbContext.Matches.Where(m => m.Table.Id == tableId);
@@ -36,10 +39,10 @@ public class MatchRepository
 
     public IEnumerable<Match> GetByDate(DateTime date)
     {
-        return _dbContext.Matches.Where(m => m.StartDate == date);
+        return _dbContext.Matches.Where(m => m.StartDate.Date == date);
     }
 
-
+    
     public Match GetById(int matchId)
     {
         return _dbContext.Matches.First(m => m.Id == matchId);
