@@ -2,9 +2,10 @@ using ping_Map_Play_pong.Model.DataModels;
 
 namespace ping_Map_Play_pong.Service.Repositories;
 
-public interface IPairMachRepository
+public interface IPairMatchRepository
 {
     IEnumerable<PairMatch> GetByTableId(int tableId);
+    IEnumerable<PairMatch> GetAll();
     IEnumerable<PairMatch> GetByUserId(int userId);
     IEnumerable<PairMatch> GetByDate(DateTime date);
     PairMatch GetById(int matchId);

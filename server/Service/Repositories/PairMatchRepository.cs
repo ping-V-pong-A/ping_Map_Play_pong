@@ -18,6 +18,10 @@ public class PairMatchRepository
     }
 
 
+    public IEnumerable<PairMatch> GetAll()
+    {
+        return _dbContext.PairMatches.ToList();
+    }
     public IEnumerable<PairMatch> GetByUserId(int userId)
     {
         return _dbContext.PairMatches.Where(pm => 
