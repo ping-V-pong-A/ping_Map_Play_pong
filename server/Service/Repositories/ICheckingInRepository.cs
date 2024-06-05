@@ -7,6 +7,8 @@ public interface ICheckingInRepository
     // C.R.U.D.
     
     IEnumerable<CheckingIn> GetAll();
+
+    CheckingIn GetById(int checkingInId);
     IEnumerable<CheckingIn> GetByTableId(int tableId);
     IEnumerable<CheckingIn> GetByUserId(int userId);
     IEnumerable<CheckingIn> GetByUserIdAndDate(int userId, DateTime date);
@@ -14,4 +16,6 @@ public interface ICheckingInRepository
     void Add(CheckingIn checkingIn);
     void Delete(CheckingIn checkingInId);
     void Update(CheckingIn checkingIn);
+    
+    
 }
