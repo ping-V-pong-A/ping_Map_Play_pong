@@ -29,13 +29,18 @@ public class CheckingInRepository : ICheckingInRepository
 
     public IEnumerable<CheckingIn> GetByUserIdAndDate(int userId, DateTime date)
     {
-        return _dbContext.CheckingIns.Where(c => c.User.Id == userId && c.StartDate == date);
+        return _dbContext.CheckingIns.Where(c => c.User.Id == userId && c.StartDate.Date == date);
     }
+    
+  
 
     public CheckingIn GetByUserIdAndStartDateTime(int userId, DateTime startDateTime)
     {
         return _dbContext.CheckingIns.FirstOrDefault(c => c.User.Id == userId && c.StartDate == startDateTime);
     }
+    
+ 
+
 
     public void Add(CheckingIn checkingIn)
     {
