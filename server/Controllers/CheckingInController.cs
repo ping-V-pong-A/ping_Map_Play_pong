@@ -36,7 +36,7 @@ public class CheckingInController : ControllerBase
         }
     }
 
-    [HttpGet("checkingIns/table.id/{tableId}")]
+    [HttpGet("checkingIns/table/{tableId}")]
     public ActionResult<IEnumerable<CheckingIn>> GetByTableId(int tableId)
     {
         try
@@ -50,7 +50,7 @@ public class CheckingInController : ControllerBase
         }
     }
     
-    [HttpGet("checkingIns/user.id/{userId}")]
+    [HttpGet("checkingIns/user/{userId}")]
     public ActionResult<IEnumerable<CheckingIn>> GetByUserId(int userId)
     {
         try
@@ -64,7 +64,7 @@ public class CheckingInController : ControllerBase
         }
     }
     
-    [HttpGet("checkingIns/user.id/date")]
+    [HttpGet("checkingIns/user/date")]
     public ActionResult<IEnumerable<CheckingIn>> GetByUserIdAndDate(int userId, DateTime date)
     {
         try
@@ -78,7 +78,7 @@ public class CheckingInController : ControllerBase
         }
     }
     
-    [HttpGet("checkingIns/user.id/startdate")]
+    [HttpGet("checkingIns/user/startdate")]
     public ActionResult<IEnumerable<CheckingIn>> GetByUserIdAndStartDateTime(int userId, DateTime date)
     {
         try
