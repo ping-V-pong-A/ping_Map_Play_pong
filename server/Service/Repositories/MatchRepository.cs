@@ -5,7 +5,7 @@ using ping_Map_Play_pong.Model.DataModels;
 namespace ping_Map_Play_pong.Service.Repositories;
 
 
-public class MatchRepository
+public class MatchRepository : IMatchRepository
 {
     private pingMapPlayPongContext _dbContext;
 
@@ -18,7 +18,8 @@ public class MatchRepository
     {
         return _dbContext.Matches.ToList();
     }
-    IEnumerable<Match> GetByTableId(int tableId)
+    
+    public IEnumerable<Match> GetByTableId(int tableId)
     {
         return _dbContext.Matches.Where(m => m.Table.Id == tableId);
     }
