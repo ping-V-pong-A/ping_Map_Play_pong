@@ -7,6 +7,6 @@ public interface IUserRepository
     IEnumerable<User> GetAll();
     User GetById(int id);
     User GetByName(string userName);
-    void Add(string userName, string email);
-    void Update(int userId);
+    void Add(User user);
+    void Update(User user);
 }
