@@ -1,3 +1,4 @@
+using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Service.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddDbContext<pingMapPlayPongContext>();
+
+builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
+builder.Services.AddScoped<ICoordinateRepository, CoordinateRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
