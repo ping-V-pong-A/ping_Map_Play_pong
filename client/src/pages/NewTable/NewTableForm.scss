@@ -42,3 +42,19 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: forestgreen;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    text-align: left;
+    margin-right: 10px;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
