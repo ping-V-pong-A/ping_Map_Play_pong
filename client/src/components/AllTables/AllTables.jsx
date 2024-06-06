@@ -1,35 +1,45 @@
-import React, {useState, useEffect} from 'react';
-
-
-
-
+import React, { useState, useEffect } from 'react';
 
 function AllTables() {
+    const [allTables, setAllTables] = useState([]);
+    const [error, setError] = useState(null);
 
-    const [allTables, setAllTables] = useState([])
-    
-    
     useEffect(() => {
-        fetch('api/tables')
-            .then(response => response.json())
-            .then(data => setAllTables(data))
-            .catch(error => console.error('Error fetching tables:', error));
+        const fetchTables = async () => {
+            try {
+                const response = await fetch('/api/Table');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setAllTables(data);
+            } catch (error) {
+                console.error('Error fetching tables:', error);
+                setError(error);
+            }
+        };
+
+        fetchTables();
     }, []);
-    
-return (
-    <>
-        <h1>Tables</h1>
-        {<ul>
-            {allTables.map(table => (
-                <li key={table.name}>
-                    <p>Latitude: {table.latitude}</p>
-                    <p>Longitude: {table.longitude}</p>
-                </li>
-            ))}
-        </ul>}
-    </>
-);
+
+    return (
+        <>
+            <h1>Tables</h1>
+            <ul>
+                {allTables.map(table => (
+                    <li key={table.id}>
+                        <p>Name: {table.name}</p>
+                        {table.coordinate && (
+                            <>
+                                <p>Latitude: {table.coordinate.lat}</p>
+                                <p>Longitude: {table.coordinate.lon}</p>
+                            </>
+                        )}
+                    </li>
+                ))}
+            </ul>
+        </>
+    );
 }
 
-
-export default AllTables
+export default AllTables;
