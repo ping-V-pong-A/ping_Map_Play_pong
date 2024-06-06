@@ -1,0 +1,27 @@
+.tables-container {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+h1 {
+    color: darkgreen;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+p {
+    margin: 0;
+}

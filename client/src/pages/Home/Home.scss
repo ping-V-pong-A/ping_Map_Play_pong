@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: beige;
+    color: darkgreen;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+h1 {
+    color: darkgreen;
+    margin-bottom: 20px;
+}
+
+
+button {
+    background-color: lightgreen;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
