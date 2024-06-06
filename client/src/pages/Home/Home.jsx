@@ -8,7 +8,7 @@ function Home() {
   
     
     return (
-        <><h1>Heyyy</h1>
+        <><h1>Welcome</h1>
            <Navbar/>
         </>
     );

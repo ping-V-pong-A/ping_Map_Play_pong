@@ -12,7 +12,6 @@ function Tables() {
    
     
     return (<>
-            <h1>Tables page</h1>
         <AllTables/>
         <button onClick={addNewTableHandler}>Add new table</button>
         </>
