@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Service.Repositories;
 
@@ -63,19 +64,19 @@ public class TableController : ControllerBase
     }
     
     [HttpPost("tables/add")]
-    public ActionResult<string> Post(string tableName, double lat, double lon)
+    public ActionResult<string> Post([FromBody] TableRequest request)
     {
         try
         {
             var coordinate = new Coordinate
             {
-                Lat = lat,
-                Lon = lon
+                Lat = request.Lat,
+                Lon = request.Lon
             };
             
             var table = new Table
             {
-                Name = tableName,
+                Name = request.Name,
                 Coordinate = coordinate
             };
             
