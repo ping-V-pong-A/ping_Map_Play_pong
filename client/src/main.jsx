@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //import './index.scss'
 import Tables from './pages/Tables/Tables.jsx'
-import NewTableForm  from "./pages/NewTable/NewTableForm.jsx";
+import NewTableForm  from "./pages/AddTable/AddTable.jsx";
 import Home from './pages/Home/Home.jsx';
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import './NewTableForm.scss';
+import './AddTable.scss';
 
 import TableCreateForm from "../../components/TableCreateForm/TableCreateForm.jsx";
 
