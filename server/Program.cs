@@ -14,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<pingMapPlayPongContext>();
+builder.Services.AddDbContext<UsersContext>();
 
 builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
 builder.Services.AddScoped<ICoordinateRepository, CoordinateRepository>();
@@ -59,6 +60,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
