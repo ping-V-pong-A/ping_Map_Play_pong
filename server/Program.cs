@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Service.Repositories;
 
@@ -19,6 +22,31 @@ builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
+var validIssuer = jwtSettingsSection["ValidIssuer"];
+var validAudience = jwtSettingsSection["ValidAudience"];
+var issuerSigningKey = builder.Configuration["JwtSettings:IssuerSigningKey"];
+
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = validIssuer,
+            ValidAudience = validAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey)),
+        };
+    });
+
 
 var app = builder.Build();
 
