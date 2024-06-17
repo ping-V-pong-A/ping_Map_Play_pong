@@ -27,12 +27,16 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            return Ok(_checkingInRepository.GetAll());
+            var res = _checkingInRepository.GetAll().ToList();
+            
+            if (res.Count == 0) return NotFound("checkingIns table is empty");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound("checkingIns table is empty");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -41,12 +45,16 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            return Ok(_checkingInRepository.GetByTableId(tableId));
+            var res = _checkingInRepository.GetByTableId(tableId).ToList();
+            
+            if (res.Count == 0) return NotFound($"checkingIn with tableId:{tableId} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"checkingIn with tableId:{tableId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -55,12 +63,16 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            return Ok(_checkingInRepository.GetByUserId(userId));
+            var res = _checkingInRepository.GetByUserId(userId).ToList();
+            
+            if (res.Count == 0) return NotFound($"checkingIn with userId:{userId} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"checkingIn with userId:{userId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -69,12 +81,16 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            return Ok(_checkingInRepository.GetByUserIdAndDate(userId, date));
+            var res = _checkingInRepository.GetByUserIdAndDate(userId, date).ToList();
+            
+            if (res.Count == 0) return NotFound($"checkingIn with userId:{userId} on this date:{date} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"checkingIn with userId:{userId} on this date:{date} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -83,12 +99,16 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            return Ok(_checkingInRepository.GetByUserIdAndStartDateTime(userId, date));
+            var res = _checkingInRepository.GetByUserIdAndStartDateTime(userId, date);
+            
+            if (res == null) return NotFound($"checkingIn with userId:{userId} on this date:{date} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"checkingIn with userId:{userId} on this date:{date} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -114,7 +134,7 @@ public class CheckingInController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return BadRequest("un success added new checkingIn");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -125,13 +145,15 @@ public class CheckingInController : ControllerBase
         {
             var checkingIn = _checkingInRepository.GetById(checkingInId);
             
+            if (checkingIn == null) return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
+            
             _checkingInRepository.Update(checkingIn);
             return Ok("successful update");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -142,13 +164,15 @@ public class CheckingInController : ControllerBase
         {
             var checkingIn = _checkingInRepository.GetById(checkingInId);
             
+            if (checkingIn == null) return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
+            
             _checkingInRepository.Delete(checkingIn);
             return Ok("successful delete");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 }

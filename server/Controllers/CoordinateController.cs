@@ -23,12 +23,17 @@ public class CoordinateController : ControllerBase
     {
         try
         {
-            return Ok(_coordinateRepository.GetAll());
+            var res = _coordinateRepository.GetAll().ToList();
+            
+            if (res.Count == 0) return NotFound("coordinates table is empty");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
+            _logger.LogError(e, e.Message);
             _logger.LogError(e.Message);
-            return NotFound("coordinates table is empty");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -37,12 +42,16 @@ public class CoordinateController : ControllerBase
     {
         try
         {
-            return Ok(_coordinateRepository.GetById(coordinateId));
+            var res = _coordinateRepository.GetById(coordinateId);
+            
+            if (res == null) return NotFound($"coordinate with id:{coordinateId} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"coordinate with id:{coordinateId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -63,7 +72,7 @@ public class CoordinateController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return BadRequest("un success added new coordinate");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -74,13 +83,15 @@ public class CoordinateController : ControllerBase
         {
             var coordinate = _coordinateRepository.GetById(coordinateId);
             
+            if (coordinate == null) return NotFound($"coordinate with id:{coordinateId} not exist in DB");
+            
             _coordinateRepository.Update(coordinate);
             return Ok("successful update");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"coordinate with id:{coordinateId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -91,13 +102,15 @@ public class CoordinateController : ControllerBase
         {
             var coordinate = _coordinateRepository.GetById(coordinateId);
             
+            if (coordinate == null) return NotFound($"coordinate with id:{coordinateId} not exist in DB");
+            
             _coordinateRepository.Delete(coordinate);
             return Ok("successful delete");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"coordinate with id:{coordinateId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 }

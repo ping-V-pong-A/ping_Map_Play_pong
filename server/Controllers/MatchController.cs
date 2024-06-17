@@ -27,12 +27,16 @@ public class MatchController : ControllerBase
     {
         try
         {
-            return Ok(_matchRepository.GetAll());
+            var res = _matchRepository.GetAll().ToList();
+            
+            if (res.Count == 0) return NotFound("matches table is empty");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound("matches table is empty");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -41,12 +45,16 @@ public class MatchController : ControllerBase
     {
         try
         {
-            return Ok(_matchRepository.GetById(matchId));
+            var res = _matchRepository.GetById(matchId);
+            
+            if (res == null) return NotFound($"match with id:{matchId} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match with id:{matchId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -55,12 +63,16 @@ public class MatchController : ControllerBase
     {
         try
         {
-            return Ok(_matchRepository.GetByTableId(tableId));
+            var res = _matchRepository.GetByTableId(tableId).ToList();
+            
+            if (res.Count == 0) return NotFound($"match with id:{tableId} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match with tableId:{tableId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -69,12 +81,16 @@ public class MatchController : ControllerBase
     {
         try
         {
-            return Ok(_matchRepository.GetByUserId(userId));
+            var res = _matchRepository.GetByUserId(userId).ToList();
+            
+            if (res.Count == 0) return NotFound($"match with userId:{userId} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match with userId:{userId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -83,12 +99,16 @@ public class MatchController : ControllerBase
     {
         try
         {
-            return Ok(_matchRepository.GetByPlayer1IdAndPlayer2Id(player1Id, player2Id));
+            var res = _matchRepository.GetByPlayer1IdAndPlayer2Id(player1Id, player2Id).ToList();
+            
+            if (res.Count == 0) return NotFound($"match between player:{player1Id} and player:{player2Id} not exist in DB");
+            
+            return Ok(res);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match between player:{player1Id} and player:{player2Id} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -97,12 +117,16 @@ public class MatchController : ControllerBase
     {
         try
         {
+            var res = _matchRepository.GetByDate(date).ToList();
+            
+            if (res.Count == 0) return NotFound($"match with date:{date} not exist in DB");
+            
             return Ok(_matchRepository.GetByDate(date));
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match with date:{date} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -112,6 +136,7 @@ public class MatchController : ControllerBase
         try
         {
             var table = _tableRepository.GetByTableId(tableId);
+            if (table == null) return NotFound($"table with date:{tableId} not exist in DB");
             var player1 = _userRepository.GetById(player1Id);
             var player2 = _userRepository.GetById(player2Id);
             
@@ -130,7 +155,7 @@ public class MatchController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return BadRequest("un success added new match");
+            return BadRequest("something went wrong");
         }
     }
 
