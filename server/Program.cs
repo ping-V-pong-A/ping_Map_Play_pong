@@ -56,6 +56,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+
 builder.Services
     .AddIdentityCore<IdentityUser>(options =>
     {
@@ -67,7 +68,10 @@ builder.Services
         options.Password.RequireUppercase = false;
         options.Password.RequireLowercase = false;
     })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<UsersContext>();
+
+
 
 var configuration = builder.Configuration;
 
