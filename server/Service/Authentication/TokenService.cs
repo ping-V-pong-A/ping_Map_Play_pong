@@ -18,15 +18,16 @@ public class TokenService : ITokenService
     }
 
     
-    public string CreateToken(IdentityUser user)
+    public string CreateToken(IdentityUser user, string role)
     {
         var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
         
         var issuer = _configuration["JwtSettings:Issuer"];
         var audience = _configuration["JwtSettings:Audience"];
         var secretKey = _configuration["JwtSettings:IssuerSigningKey"];
+        
         var token = CreateJwtToken(
-            CreateClaims(user),
+            CreateClaims(user, role),
             CreateSigningCredentials(secretKey),
             expiration,
             issuer,
@@ -46,20 +47,34 @@ public class TokenService : ITokenService
             signingCredentials: credentials
         );
 
-    private List<Claim> CreateClaims(IdentityUser user)
+    private List<Claim> CreateClaims(IdentityUser user, string? role)
     {
-        var claims = new List<Claim>
+        try
         {
-            new Claim(JwtRegisteredClaimNames.Sub, "TokenForTheApiWithAuth"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Sub, "TokenForTheApiWithAuth"),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Iat,
                 EpochTime.GetIntDate(DateTime.UtcNow).ToString(CultureInfo.InvariantCulture),
                 ClaimValueTypes.Integer64),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
-        return claims;
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Name, user.UserName),
+            new(ClaimTypes.Email, user.Email),
+            };
+
+            if (role != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            return claims;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
    
