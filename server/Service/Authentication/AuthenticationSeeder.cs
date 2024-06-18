@@ -7,11 +7,16 @@ public class AuthenticationSeeder
 
     private RoleManager<IdentityRole> roleManager;
     private readonly IConfiguration _configuration;
+    private UserManager<IdentityUser> userManager;
 
-    public AuthenticationSeeder(RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    
+    
+    
+    public AuthenticationSeeder(RoleManager<IdentityRole> roleManager, IConfiguration configuration, UserManager<IdentityUser> userManager)
     {
         this.roleManager = roleManager;
         _configuration = configuration;
+        this.userManager = userManager;
     }
     
 
