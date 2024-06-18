@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                         <Route path='/tables' element={<Tables/>}/>
                         <Route path='/tables/new' element={<NewTableForm/>}/>
                         <Route path='/sign-in' element={<SignIn/>}/>
-                        <Route path='/sign-un' element={<SignUp/>}/>
+                        <Route path='/sign-up' element={<SignUp/>}/>
                         
                         <Route element={<ProtectedRoutes/>}>
                             
