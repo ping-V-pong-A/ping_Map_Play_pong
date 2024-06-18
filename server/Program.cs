@@ -6,6 +6,7 @@ using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Service.Authentication;
 using ping_Map_Play_pong.Service.Repositories;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,6 +27,7 @@ builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services
     .AddIdentityCore<IdentityUser>(options =>
@@ -39,6 +41,8 @@ builder.Services
         options.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<UsersContext>();
+
+var configuration = builder.Configuration;
 
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 var validIssuer = jwtSettingsSection["ValidIssuer"];
