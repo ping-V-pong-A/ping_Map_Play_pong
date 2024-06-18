@@ -17,11 +17,15 @@ export default function Navbar() {
                 <span></span>
                 <span></span>
                 <span></span>
+                <span></span>
+                <span></span>
             </div>
             <ul className={`navbar__links ${isActive ? 'active' : ''}`}>
                 <li><Link to="/" onClick={() => setIsActive(false)}>Home</Link></li>
                 <li><Link to="/tables" onClick={() => setIsActive(false)}>Tables</Link></li>
                 <li><Link to="/tables/new" onClick={() => setIsActive(false)}>New Table</Link></li>
+                <li><Link to="/sign-in" onClick={() => setIsActive(false)}>Sign In</Link></li>
+                <li><Link to="/sign-up" onClick={() => setIsActive(false)}>Sign Up</Link></li>
             </ul>
         </nav>
     )

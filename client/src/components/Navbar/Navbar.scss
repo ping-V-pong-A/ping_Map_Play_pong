@@ -2,6 +2,7 @@ $primary-color: #333;
 $secondary-color: #fff;
 $brand-font-size: 1.5rem;
 $link-font-size: 1rem;
+$navbar-width: 100%;
 $navbar-height: 60px;
 $breakpoint: 768px;
 
@@ -11,8 +12,12 @@ $breakpoint: 768px;
   justify-content: space-between;
   background-color: $primary-color;
   padding: 0 1rem;
+  width: $navbar-width;
   height: $navbar-height;
   color: $secondary-color;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure it stays above other content */
 
   &__brand {
     font-size: $brand-font-size;
@@ -63,7 +68,8 @@ $breakpoint: 768px;
   .navbar {
     flex-direction: column;
     align-items: flex-start;
-    position: relative;
+    position: sticky; /* Ensure it sticks to the top on small screens too */
+    top: 0;
 
     &__toggle {
       display: flex;
