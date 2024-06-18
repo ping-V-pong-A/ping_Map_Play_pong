@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "-": "^0.0.1",
+    "@types/leaflet": "^1.9.12",
+    "leaflet": "^1.9.4",
     "npm": "^10.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.23.1"
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.23.1",
+    "save": "^2.9.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
