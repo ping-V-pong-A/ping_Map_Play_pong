@@ -18,12 +18,13 @@ public class TokenService : ITokenService
     }
 
     
+    
     public string CreateToken(IdentityUser user, string role)
     {
         var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
         
-        var issuer = _configuration["JwtSettings:Issuer"];
-        var audience = _configuration["JwtSettings:Audience"];
+        var issuer = _configuration["JwtSettings:ValidIssuer"];
+        var audience = _configuration["JwtSettings:ValidAudience"];
         var secretKey = _configuration["JwtSettings:IssuerSigningKey"];
         
         var token = CreateJwtToken(
