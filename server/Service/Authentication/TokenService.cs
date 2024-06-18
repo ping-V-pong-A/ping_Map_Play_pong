@@ -24,7 +24,7 @@ public class TokenService : ITokenService
         
         var issuer = _configuration["JwtSettings:Issuer"];
         var audience = _configuration["JwtSettings:Audience"];
-        var secretKey = _configuration["JwtSettings:SecretKey"];
+        var secretKey = _configuration["JwtSettings:IssuerSigningKey"];
         var token = CreateJwtToken(
             CreateClaims(user),
             CreateSigningCredentials(secretKey),
