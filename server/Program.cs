@@ -102,7 +102,11 @@ builder.Services
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using var scope = app.Services.CreateScope();
+var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
+authenticationSeeder.AddRoles();
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
