@@ -7,13 +7,65 @@ using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Service.Authentication;
 using ping_Map_Play_pong.Service.Repositories;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddDbContext<pingMapPlayPongContext>();
+builder.Services.AddDbContext<UsersContext>();
+
+
+builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
+builder.Services.AddScoped<ICoordinateRepository, CoordinateRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<AuthenticationSeeder>();
+
+builder.Services
+    .AddIdentityCore<IdentityUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<UsersContext>();
+
+
+var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
+var validIssuer = jwtSettingsSection["ValidIssuer"];
+var validAudience = jwtSettingsSection["ValidAudience"];
+var issuerSigningKey = builder.Configuration["JwtSettings:IssuerSigningKey"];
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = validIssuer,
+            ValidAudience = validAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey)),
+        };
+    });
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -43,64 +95,8 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-builder.Services.AddDbContext<pingMapPlayPongContext>();
-builder.Services.AddDbContext<UsersContext>();
-
-builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
-builder.Services.AddScoped<ICoordinateRepository, CoordinateRepository>();
-builder.Services.AddScoped<IMatchRepository, MatchRepository>();
-builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
-builder.Services.AddScoped<ITableRepository, TableRepository>();
-builder.Services.AddScoped<ITeamRepository, TeamRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<AuthenticationSeeder>();
-
-
-builder.Services
-    .AddIdentityCore<IdentityUser>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = false;
-        options.User.RequireUniqueEmail = true;
-        options.Password.RequireDigit = false;
-        options.Password.RequiredLength = 6;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireLowercase = false;
-    })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<UsersContext>();
-
-
-
-var configuration = builder.Configuration;
-
-var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
-var validIssuer = jwtSettingsSection["ValidIssuer"];
-var validAudience = jwtSettingsSection["ValidAudience"];
-var issuerSigningKey = builder.Configuration["JwtSettings:IssuerSigningKey"];
-
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ClockSkew = TimeSpan.Zero,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = validIssuer,
-            ValidAudience = validAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey)),
-        };
-    });
-
-
 var app = builder.Build();
+
 
 using var scope = app.Services.CreateScope();
 var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
@@ -114,12 +110,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseRouting();
 
 app.Run();
