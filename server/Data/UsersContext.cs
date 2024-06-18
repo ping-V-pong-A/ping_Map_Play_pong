@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ping_Map_Play_pong.Data;
 
-public class UsersContext : IdentityUserContext<IdentityUser>
+public class UsersContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
     private readonly IConfiguration _configuration;
     
