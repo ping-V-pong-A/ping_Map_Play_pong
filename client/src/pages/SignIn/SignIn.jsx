@@ -29,7 +29,7 @@ export default function SignIn() {
                 navigate("/sign-in")
             }
             login();
-            navigate("/solar-watch")
+            navigate("/tables")
         })
     }
 
