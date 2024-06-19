@@ -50,19 +50,27 @@ public class UserController : ControllerBase
         }
     }
     
-    [HttpGet("users/name/{userName}"),Authorize(Roles = "Admin")]
-    public ActionResult<User> GetByName(string userName)
+    [HttpGet("users/name/{userName}")]
+    public async Task<ActionResult<User>> GetByName(string userName)
     {
         try
         {
-            return Ok(_userRepository.GetByNameAsync(userName));
+            var user = await _userRepository.GetByNameAsync(userName);
+
+            if (user == null)
+            {
+                return NotFound($"User with name '{userName}' not found");
+            }
+
+            return Ok(user);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"user with id:{userName} not exist in DB");
+            return StatusCode(500, $"Internal server error: {e.Message}");
         }
     }
+
     
     /*
     [HttpPost("users/register")]

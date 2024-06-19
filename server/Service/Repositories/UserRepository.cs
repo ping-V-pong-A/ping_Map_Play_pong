@@ -32,6 +32,23 @@ public class UserRepository : IUserRepository
         return _dbContext.Users.FirstOrDefault(u => u.IdentityUserEmail == email);
     }
    
+    /*public async Task<User?> GetByNameAsync(string userName)
+    {
+        var identityUser = await _userManager.FindByNameAsync(userName);
+
+        if (identityUser == null)
+        {
+            return null;
+        }
+
+        Console.WriteLine($"identityusers username: {identityUser.UserName}");
+        Console.WriteLine($"identityusers email: {identityUser.Email}");
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.IdentityUserEmail == identityUser.Email);
+      
+        return user;
+    }*/
+    
     public async Task<User?> GetByNameAsync(string userName)
     {
         var identityUser = await _userManager.FindByNameAsync(userName);
@@ -42,7 +59,14 @@ public class UserRepository : IUserRepository
         }
 
         var user = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.IdentityUserEmail == identityUser.Email);
+            .Where(u => u.IdentityUserEmail == identityUser.Email)
+            .Select(u => new User {
+                Id = u.Id,
+                RegistrationDate = u.RegistrationDate,
+                CheckedInTables = u.CheckedInTables,
+                Rank = u.Rank
+            })
+            .FirstOrDefaultAsync();
 
         return user;
     }
@@ -51,7 +75,6 @@ public class UserRepository : IUserRepository
     {
         _dbContext.Add(user);
         _dbContext.SaveChanges();
-       
     }
 
     public void Update(User user)
