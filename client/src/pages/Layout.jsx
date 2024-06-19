@@ -1,11 +1,12 @@
-import React from "react";
+import React  from "react";
 import Navbar from "../components/Navbar/Navbar.jsx";
+import {Outlet} from "react-router-dom";
 
-export default function Layout({ children }) {
+export default function Layout() {
     return (
         <div>
             <Navbar />
-            <main>{children}</main>
+            <Outlet />
         </div>
     );
 }

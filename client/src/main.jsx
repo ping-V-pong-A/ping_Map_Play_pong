@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {ProfileContextProvider} from "./contexts/ProfileContext.jsx";
 import ProtectedRoutes from "./pages/ProtectedRoutes.jsx";
 
-
 import Layout from "./pages/Layout.jsx";
 import Tables from './pages/Tables/Tables.jsx'
 import NewTableForm  from "./pages/AddTable/AddTable.jsx";
@@ -18,8 +17,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ProfileContextProvider>
             <BrowserRouter>
-                <Layout>
-                    <Routes>
+                <Routes>
+                    <Route path='/' element={<Layout/>}>
                         
                         <Route path='/' element={<Home/>}/>
                         <Route path='/tables' element={<Tables/>}/>
@@ -31,8 +30,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                             
                         </Route>
                         
-                    </Routes>
-                </Layout>
+                    </Route>
+                </Routes>
             </BrowserRouter>            
         </ProfileContextProvider>
     </React.StrictMode>
