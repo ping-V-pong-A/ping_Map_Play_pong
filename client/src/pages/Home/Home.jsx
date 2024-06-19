@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
 import './Home.scss';
-import Navbar from "../../components/Navbar/Navbar.jsx";
+import React from 'react';
 
+import Map from "../../components/Map/Map.jsx"
 
-function Home() {
- 
-  
+export default function Home() {
     
     return (
         <><h1>Welcome</h1>
-           <Navbar/>
+            <Map/>
         </>
     );
-
 }
-
-export default Home;
