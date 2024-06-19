@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.Enums;
 
@@ -8,16 +12,15 @@ public class User
 {
     [Key]
     public int Id { get; init; }
-    public string Name { get; init; }
-    [Required]
-    public string Email { get; init; }
-    public string Password { get; init; }
-    public DateTime RegistrationDate { get; init; } = DateTime.Now;
     
-    public ICollection<Table> CheckedInTables { get; init; }
+    public DateTime RegistrationDate { get; init; }
     
-    // TODO 
-    // add favorite tables
-    
+    public ICollection<Table> CheckedInTables { get; init; } = new List<Table>();
+
+    [ForeignKey(nameof(IdentityUser))]
+    public string IdentityUserEmail { get; set; }
+
+    // Navigation property to IdentityUser
+    public IdentityUser IdentityUser { get; set; }
     public Rank Rank { get; init; }
 }

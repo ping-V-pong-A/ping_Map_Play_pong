@@ -5,9 +5,9 @@ namespace ping_Map_Play_pong.Service.Repositories;
 
 public class PairMatchRepository : IPairMatchRepository
 {
-    private pingMapPlayPongContext _dbContext;
+    private PingMapPlayPongContext _dbContext;
 
-    public PairMatchRepository(pingMapPlayPongContext context)
+    public PairMatchRepository(PingMapPlayPongContext context)
     {
         _dbContext = context;
     }

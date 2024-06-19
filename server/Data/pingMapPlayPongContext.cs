@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
 namespace ping_Map_Play_pong.Data;
 
-public class pingMapPlayPongContext : DbContext
+public class PingMapPlayPongContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Team> Teams { get; set; }
@@ -15,13 +17,29 @@ public class pingMapPlayPongContext : DbContext
     
     private readonly IConfiguration _configuration;
 
-    public pingMapPlayPongContext(IConfiguration configuration)
+
+    public PingMapPlayPongContext(DbContextOptions<PingMapPlayPongContext> options,IConfiguration configuration)  : base(options)
     {
         _configuration = configuration;
+      
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
     {
         optionBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL_CONNECTION"));
+    }
+    
+    
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.IdentityUser)
+            .WithMany()
+            .HasForeignKey(u => u.IdentityUserEmail)
+            .HasPrincipalKey(iu => iu.Email); // Az IdentityUser osztály Email oszlopára hivatkozunk
+
     }
 }

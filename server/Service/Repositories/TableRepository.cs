@@ -5,9 +5,9 @@ namespace ping_Map_Play_pong.Service.Repositories;
 
 public class TableRepository : ITableRepository
 {
-    private pingMapPlayPongContext _dbContext;
+    private PingMapPlayPongContext _dbContext;
 
-    public TableRepository(pingMapPlayPongContext context)
+    public TableRepository(PingMapPlayPongContext context)
     {
         _dbContext = context;
     }

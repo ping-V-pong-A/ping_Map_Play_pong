@@ -5,14 +5,14 @@ namespace ping_Map_Play_pong.Service.Repositories;
 
 public class CheckingInRepository : ICheckingInRepository
 {
-    private pingMapPlayPongContext _dbContext;
+    private PingMapPlayPongContext _dbContext;
 
     public CheckingIn GetById(int checkingInId)
     {
         return _dbContext.CheckingIns.FirstOrDefault(c => c.Id == checkingInId);
     }
     
-    public CheckingInRepository(pingMapPlayPongContext context)
+    public CheckingInRepository(PingMapPlayPongContext context)
     {
         _dbContext = context;
     }

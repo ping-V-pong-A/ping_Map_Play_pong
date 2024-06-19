@@ -7,4 +7,5 @@ public enum Rank
     Beginner,
     Intermediate,
     Senior,
+    None,
 }

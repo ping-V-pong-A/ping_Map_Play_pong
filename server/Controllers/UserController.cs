@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Service.Repositories;
@@ -11,14 +13,16 @@ public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
     private readonly IUserRepository _userRepository;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public UserController(ILogger<UserController> logger, IUserRepository userRepository)
+    public UserController(ILogger<UserController> logger, IUserRepository userRepository, UserManager<IdentityUser> userManager)
     {
         _logger = logger;
         _userRepository = userRepository;
+        _userManager = userManager;
     }
 
-    [HttpGet(Name = "users")]
+    [HttpGet(Name = "users"), ] 
     public ActionResult<IEnumerable<User>> GetAll()
     {
         try
@@ -47,19 +51,28 @@ public class UserController : ControllerBase
     }
     
     [HttpGet("users/name/{userName}")]
-    public ActionResult<User> GetByName(string userName)
+    public async Task<ActionResult<User>> GetByName(string userName)
     {
         try
         {
-            return Ok(_userRepository.GetByName(userName));
+            var user = await _userRepository.GetByNameAsync(userName);
+
+            if (user == null)
+            {
+                return NotFound($"User with name '{userName}' not found");
+            }
+
+            return Ok(user);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"user with id:{userName} not exist in DB");
+            return StatusCode(500, $"Internal server error: {e.Message}");
         }
     }
+
     
+    /*
     [HttpPost("users/register")]
     public ActionResult<string> Post(string userName, string email, string password)
     {
@@ -68,8 +81,7 @@ public class UserController : ControllerBase
             var newUser = new User
             {
                 Name = userName,
-                Email = email,
-                Password = password,
+      
                 Rank = 0
             };
             
@@ -82,7 +94,7 @@ public class UserController : ControllerBase
             _logger.LogError(e.Message);
             return BadRequest("un success registering");
         }
-    }
+    }*/
 
     [HttpPatch("users/id/{userId}")]
     public ActionResult<string> Update(int userId)
@@ -100,21 +112,47 @@ public class UserController : ControllerBase
             return NotFound($"user with id:{userId} not exist in DB");
         }
     }
-    
+
     [HttpDelete("users/id/{userId}")]
-    public ActionResult<string> Delete(int userId)
+    public async Task<IActionResult> Delete(int userId)
     {
         try
         {
             var user = _userRepository.GetById(userId);
+            if (user == null)
+            {
+                return NotFound($"User with ID:{userId} not found in database");
+            }
+
+            var identityUser = await _userManager.FindByEmailAsync(user.IdentityUserEmail);
+     
+            if (identityUser != null)
+            {
+                var result = await _userManager.DeleteAsync(identityUser);
+          
+                if (!result.Succeeded)
+                {
+                    _logger.LogError("Failed to delete identity user: " + result.Errors.FirstOrDefault()?.Description);
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to delete identity user");
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"Identity user not found for user ID: {userId}");
+            }
             
-            _userRepository.Delete(user);
-            return Ok("successful delete");
+
+            return Ok("User successfully deleted");
         }
         catch (Exception e)
         {
-            _logger.LogError(e.Message);
-            return NotFound($"user with id:{userId} not exist in DB");
+            _logger.LogError(e, "An error occurred while deleting user");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "An error occurred while processing the request");
         }
     }
+
+
+    
+    
 }
