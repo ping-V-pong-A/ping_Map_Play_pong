@@ -7,9 +7,9 @@ namespace ping_Map_Play_pong.Service.Repositories;
 
 public class MatchRepository : IMatchRepository
 {
-    private pingMapPlayPongContext _dbContext;
+    private PingMapPlayPongContext _dbContext;
 
-    public MatchRepository(pingMapPlayPongContext context)
+    public MatchRepository(PingMapPlayPongContext context)
     {
         _dbContext = context;
     }

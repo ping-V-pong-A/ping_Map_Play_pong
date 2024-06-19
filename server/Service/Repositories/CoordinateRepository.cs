@@ -5,9 +5,9 @@ namespace ping_Map_Play_pong.Service.Repositories;
 
 public class CoordinateRepository : ICoordinateRepository
 {
-    private pingMapPlayPongContext _dbContext;
+    private PingMapPlayPongContext _dbContext;
 
-    public CoordinateRepository(pingMapPlayPongContext context)
+    public CoordinateRepository(PingMapPlayPongContext context)
     {
         _dbContext = context;
     }
