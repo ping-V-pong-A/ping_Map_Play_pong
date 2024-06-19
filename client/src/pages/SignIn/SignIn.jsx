@@ -20,7 +20,7 @@ const postSignIn = (user) => fetch('/api/Auth/Login', {
 
 export default function SignIn() {
     const navigate = useNavigate();
-    const { login } = useProfile();
+    const {profile, setProfile, login } = useProfile();
 
     const handleSignIn = (user) => {
         postSignIn(user).then( res => {
