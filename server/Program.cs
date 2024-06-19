@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ping_Map_Play_pong.Data;
@@ -12,9 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddDbContext<PingMapPlayPongContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQL_CONNECTION")));
 
-builder.Services.AddDbContext<pingMapPlayPongContext>();
-builder.Services.AddDbContext<UsersContext>();
+//builder.Services.AddDbContext<PingMapPlayPongContext>();
+//builder.Services.AddDbContext<UsersContext>();
 
 
 builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
@@ -40,8 +43,7 @@ builder.Services
         options.Password.RequireLowercase = false;
     })
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<UsersContext>();
-
+    .AddEntityFrameworkStores<PingMapPlayPongContext>();
 
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 var validIssuer = jwtSettingsSection["ValidIssuer"];
@@ -101,6 +103,7 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
 authenticationSeeder.AddRoles();
+authenticationSeeder.AddAdmin();
 
 
 if (app.Environment.IsDevelopment())
