@@ -62,14 +62,28 @@ public class UserRepository : IUserRepository
             .Where(u => u.IdentityUserEmail == identityUser.Email)
             .Select(u => new User {
                 Id = u.Id,
+                IdentityUserEmail = u.IdentityUserEmail,
                 RegistrationDate = u.RegistrationDate,
                 CheckedInTables = u.CheckedInTables,
                 Rank = u.Rank
             })
             .FirstOrDefaultAsync();
+           
 
         return user;
     }
+    
+    
+    /* var user = await _dbContext.Users
+            .Where(u => u.IdentityUserEmail == identityUser.Email)
+            .Select(u => new User {
+                Id = u.Id,
+                Email = u.Email,
+                RegistrationDate = u.RegistrationDate,
+                CheckedInTables = u.CheckedInTables,
+                Rank = u.Rank
+            })
+            .FirstOrDefaultAsync();*/
     
     public void Add(User user)
     {
