@@ -21,13 +21,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path='/' element={<Layout/>}>
                         
                         <Route path='/' element={<Home/>}/>
-                        <Route path='/tables' element={<Tables/>}/>
-                        <Route path='/tables/new' element={<NewTableForm/>}/>
+                       
                         <Route path='/sign-in' element={<SignIn/>}/>
                         <Route path='/sign-up' element={<SignUp/>}/>
                         
                         <Route element={<ProtectedRoutes/>}>
-                            
+                            <Route path='/tables' element={<Tables/>}/>
+                            <Route path='/tables/new' element={<NewTableForm/>}/>
                         </Route>
                         
                     </Route>
