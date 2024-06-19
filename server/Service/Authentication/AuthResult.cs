@@ -7,10 +7,7 @@ public record AuthResult(
     bool Success,
     string Email,
     string UserName,
-    string Token,
-    DateTime? RegistrationDate = null,
-    ICollection<Table> CheckedInTables = null, 
-    Rank Rank = Rank.None )
+    string Token)
 
 
 {
