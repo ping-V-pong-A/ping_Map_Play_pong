@@ -34,5 +34,12 @@ public class PingMapPlayPongContext : IdentityDbContext<IdentityUser, IdentityRo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.IdentityUser)
+            .WithMany()
+            .HasForeignKey(u => u.IdentityUserEmail)
+            .HasPrincipalKey(iu => iu.Email); // Az IdentityUser osztály Email oszlopára hivatkozunk
+
     }
 }

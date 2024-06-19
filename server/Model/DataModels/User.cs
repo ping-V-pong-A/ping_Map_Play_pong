@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +15,9 @@ public class User
     
     public DateTime RegistrationDate { get; init; }
     
-    public ICollection<Table> CheckedInTables { get; init; }
-    
+    public ICollection<Table> CheckedInTables { get; init; } = new List<Table>();
 
-    
-    [ForeignKey("IdentityUserEmail")]
+    [ForeignKey(nameof(IdentityUser))]
     public string IdentityUserEmail { get; set; }
 
     // Navigation property to IdentityUser
