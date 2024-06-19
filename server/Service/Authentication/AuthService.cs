@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
@@ -40,6 +41,7 @@ public class AuthService : IAuthService
             IdentityUserEmail = userEmail,
             Rank = Rank.Beginner,
         };
+     
 
         _userRepository.Add(newUser);
         return new AuthResult(true, email, username, "");
@@ -78,7 +80,10 @@ public class AuthService : IAuthService
         var roles = await _userManager.GetRolesAsync(managedUser);
         var accessToken = _tokenService.CreateToken(managedUser, roles[0]);
         var user = _userRepository.GetByEmail(managedUser.Email);
-        return new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken, user.RegistrationDate, user.CheckedInTables,user.Rank);
+      
+        return  new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
+        
+
     }
 
     private static AuthResult InvalidEmail(string email)
