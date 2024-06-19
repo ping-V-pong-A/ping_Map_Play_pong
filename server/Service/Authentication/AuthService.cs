@@ -79,7 +79,7 @@ public class AuthService : IAuthService
 
         var roles = await _userManager.GetRolesAsync(managedUser);
         var accessToken = _tokenService.CreateToken(managedUser, roles[0]);
-        var user = _userRepository.GetByEmail(managedUser.Email);
+      
       
         return  new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
         
