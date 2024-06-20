@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Model.DataModels;
 
@@ -14,7 +15,14 @@ public class TableRepository : ITableRepository
 
     public IEnumerable<Table> GetAll()
     {
-        return _dbContext.Tables.ToList();
+        var tables = _dbContext.Tables
+            .Include(table => table.Coordinate)
+            .Include(table => table.CheckingIns)
+            .Include(table => table.LeaderBoard)
+            .Include(table => table.PairMatchesLeaderBoard)
+            .ToList();
+        
+        return tables;
     }
 
 

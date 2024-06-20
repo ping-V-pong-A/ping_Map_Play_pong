@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.RequestModels;
+using ping_Map_Play_pong.Model.ResponseModels;
 using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Controllers;
@@ -13,24 +15,42 @@ public class TableController : ControllerBase
     private readonly ILogger<TableController> _logger;
     private readonly ITableRepository _tableRepository;
     private readonly ICoordinateRepository _coordinateRepository;
+    private readonly ICheckingInRepository _checkingInRepository;
+    private readonly IMatchRepository _matchRepository;
+    private readonly IPairMatchRepository _pairMatchRepository;
 
-    public TableController(ILogger<TableController> logger, ITableRepository tableRepository, ICoordinateRepository coordinateRepository)
+    public TableController(ILogger<TableController> logger, ITableRepository tableRepository, ICoordinateRepository coordinateRepository, IMatchRepository matchRepository, ICheckingInRepository checkingInRepository, IPairMatchRepository pairMatchRepository)
     {
         _logger = logger;
         _tableRepository = tableRepository;
         _coordinateRepository = coordinateRepository;
+        _matchRepository = matchRepository;
+        _checkingInRepository = checkingInRepository;
+        _pairMatchRepository = pairMatchRepository;
     }
 
     [HttpGet(Name = "tables")]
-    public ActionResult<IEnumerable<Table>> GetAll()
+    public ActionResult<IEnumerable<TableResponse>> GetAll()
     {
         try
         {
-            return Ok(_tableRepository.GetAll());
+            var tables = _tableRepository.GetAll();
+            var respTables = tables.Select(table => new TableResponse
+            {
+                Id = table.Id,
+                Name = table.Name,
+                Lat = _coordinateRepository.GetById(table.Coordinate.Id).Lat,
+                Lon = _coordinateRepository.GetById(table.Coordinate.Id).Lon,
+                CheckingIns = _checkingInRepository.GetByTableId(table.Id).ToList(),
+                Matches = _matchRepository.GetByTableId(table.Id).ToList(),
+                PairMatches = _pairMatchRepository.GetByTableId(table.Id).ToList()
+            }).ToList();
+
+            return Ok(respTables);
         }
         catch (Exception e)
         {
-            _logger.LogError(e.Message);
+            _logger.LogError(e, e.Message);
             return NotFound("tables table is empty");
         }
     }
