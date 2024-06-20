@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,6 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<PingMapPlayPongContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQL_CONNECTION")));
 
-//builder.Services.AddDbContext<PingMapPlayPongContext>();
-//builder.Services.AddDbContext<UsersContext>();
 
 
 builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
@@ -30,6 +29,15 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticationSeeder>();
+
+
+var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
+var validIssuer = jwtSettingsSection["ValidIssuer"];
+var validAudience = jwtSettingsSection["ValidAudience"];
+var issuerSigningKey = builder.Configuration["JwtSettings:IssuerSigningKey"];
+
+
+
 
 builder.Services
     .AddIdentityCore<IdentityUser>(options =>
@@ -45,13 +53,10 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<PingMapPlayPongContext>();
 
-var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
-var validIssuer = jwtSettingsSection["ValidIssuer"];
-var validAudience = jwtSettingsSection["ValidAudience"];
-var issuerSigningKey = builder.Configuration["JwtSettings:IssuerSigningKey"];
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//by default itt redirect van
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters()
@@ -65,7 +70,22 @@ builder.Services
             ValidAudience = validAudience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey)),
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["access_token"];
+                
+                return Task.CompletedTask;
+            },
+            /*OnAuthenticationFailed = async ctx => 
+            {
+            var putBreakpointHere = true;
+            var exceptionMessage = ctx.Exception;
+        },*/
+        };
     });
+    ;
 
 
 builder.Services.AddEndpointsApiExplorer();

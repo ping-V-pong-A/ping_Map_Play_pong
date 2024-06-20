@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
         Console.WriteLine($"Received AuthRequest: Email={request.Email}, Password={request.Password}");
         if (!ModelState.IsValid)
         {
-           
+            
             return BadRequest(ModelState);
         }
 
@@ -69,8 +69,17 @@ public class AuthController : ControllerBase
         }
 
         // Set the cookie here
-        HttpContext.Response.Cookies.Append("access_token", result.Token, new CookieOptions { HttpOnly = true });
+        HttpContext.Response.Cookies.Append("access_token", result.Token, new CookieOptions { HttpOnly = true, Expires = DateTime.Now.AddMinutes(30)});
       
         return Ok(new AuthResponse(result.Email, result.UserName, result.Token));
+    }
+    
+    
+    
+    [HttpPost("Logout")]
+    public IActionResult Logout()
+    {
+        HttpContext.Response.Cookies.Delete("access_token");
+        return Ok();
     }
 }
