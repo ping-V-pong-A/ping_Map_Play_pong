@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 import SignUpForm from "../../components/SignUpForm/SignUpForm.jsx"
 
-const postSignUp = (user) => fetch('/api/Auth/Registration', {
+const postSignUp = (user) => fetch('/api/Auth/Register', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
