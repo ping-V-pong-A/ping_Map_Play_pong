@@ -22,7 +22,7 @@ export default function SignUp() {
     const navigate = useNavigate();
 
     const handleSignIn = (user) => {
-        postSignUp(user).then( res => res ? navigate("/solar-watch") : navigate("/sign-up"))
+        postSignUp(user).then( res => res ? navigate("/tables") : navigate("/sign-up"))
     }
 
     const props = {
