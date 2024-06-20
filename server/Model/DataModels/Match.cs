@@ -9,9 +9,8 @@ public class Match
     [Key]
     public int Id { get; init; }
     
-    [DeleteBehavior(DeleteBehavior.NoAction)]
-    public Table Table { get; init; }
-    
+    [ForeignKey("TableId")]
+    public int TableId { get; init; }
     public DateTime StartDate { get; init; }
     public DateTime EndDate { get; init; }
 

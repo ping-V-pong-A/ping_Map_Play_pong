@@ -115,7 +115,7 @@ public class PairMatchController : ControllerBase
             
             var newPairMatch = new PairMatch
             {
-                Table = table,
+                TableId = table.Id,
                 Team1 = team1,
                 Team2 = team2,
                 StartDate = startTime,

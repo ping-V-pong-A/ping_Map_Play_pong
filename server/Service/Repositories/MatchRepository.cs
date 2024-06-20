@@ -21,7 +21,7 @@ public class MatchRepository : IMatchRepository
     
     public IEnumerable<Match> GetByTableId(int tableId)
     {
-        return _dbContext.Matches.Where(m => m.Table.Id == tableId);
+        return _dbContext.Matches.Where(m => m.TableId == tableId);
     }
 
 

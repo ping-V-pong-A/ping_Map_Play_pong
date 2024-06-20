@@ -14,7 +14,7 @@ public class PairMatchRepository : IPairMatchRepository
 
     public IEnumerable<PairMatch> GetByTableId(int tableId)
     {
-        return _dbContext.PairMatches.Where(pm => pm.Table.Id == tableId);
+        return _dbContext.PairMatches.Where(pm => pm.TableId == tableId);
     }
 
 

@@ -24,24 +24,24 @@ public class CheckingInRepository : ICheckingInRepository
 
     public IEnumerable<CheckingIn> GetByTableId(int tableId)
     {
-        return _dbContext.CheckingIns.Where(c => c.Table.Id == tableId);
+        return _dbContext.CheckingIns.Where(c => c.TableId == tableId);
     }
 
     public IEnumerable<CheckingIn> GetByUserId(int userId)
     {
-        return _dbContext.CheckingIns.Where(c => c.User.Id == userId);
+        return _dbContext.CheckingIns.Where(c => c.UserId == userId);
     }
 
     public IEnumerable<CheckingIn> GetByUserIdAndDate(int userId, DateTime date)
     {
-        return _dbContext.CheckingIns.Where(c => c.User.Id == userId && c.StartDate.Date == date);
+        return _dbContext.CheckingIns.Where(c => c.UserId == userId && c.StartDate.Date == date);
     }
 
 
     
     public CheckingIn GetByUserIdAndStartDateTime(int userId, DateTime startDateTime)
     {
-        return _dbContext.CheckingIns.FirstOrDefault(c => c.User.Id == userId &&
+        return _dbContext.CheckingIns.FirstOrDefault(c => c.UserId == userId &&
                                                           c.StartDate.Year == startDateTime.Year &&
                                                           c.StartDate.Month == startDateTime.Month &&
                                                           c.StartDate.Day == startDateTime.Day &&
