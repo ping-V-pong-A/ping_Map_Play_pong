@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import { useProfile } from '../../contexts/ProfileContext';
 
@@ -13,7 +13,7 @@ const postSignIn = (user) => fetch('/api/Auth/Login', {
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
         }
-        return res.ok
+        return res.json()
     }).catch(err => {
         console.error('Error:', err);    
 })
@@ -23,13 +23,14 @@ export default function SignIn() {
     const {profile, setProfile, login } = useProfile();
 
     const handleSignIn = (user) => {
-        postSignIn(user).then( res => {
-            if (!res)
-            {
-                navigate("/sign-in")
-            }
+        postSignIn(user)
+            .then(data =>{
+            console.log(data)
+            setProfile(data)          
             login();
             navigate("/tables")
+        }).then(_=> {
+            console.log(profile)
         })
     }
 
