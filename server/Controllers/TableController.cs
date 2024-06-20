@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
@@ -64,33 +65,36 @@ public class TableController : ControllerBase
     }
     
     [HttpPost("tables/add")]
-    public ActionResult<string> Post([FromBody] TableRequest request)
+    public IActionResult Post([FromBody] TableRequest request)
     {
         try
-        {
+        {  
             var coordinate = new Coordinate
             {
                 Lat = request.Lat,
                 Lon = request.Lon
             };
-            
+        
             var table = new Table
             {
                 Name = request.Name,
                 Coordinate = coordinate
             };
-            
+        
             _tableRepository.Add(table);
-            
-            return Ok("success registering");
+        
+            return Ok(new { message = "success registering" });
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return BadRequest("un success registering");
+            return BadRequest(new { message = "registration error" });
         }
     }
 
+    
+    
+    
     [HttpPatch("tables/id/{tableId}")]
     public ActionResult<string> Update(int tableId)
     {
