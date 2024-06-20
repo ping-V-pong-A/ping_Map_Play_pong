@@ -10,6 +10,7 @@ const postTable = (table) => {
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: 'include',
         body: JSON.stringify(table)
     })
         .then((res) => {
@@ -25,16 +26,16 @@ const postTable = (table) => {
 
 export default function AddTable() {
     const navigate = useNavigate();
-    
+
     const handleCreateTable = (table) => {
         postTable(table)
             .then(_ => navigate("/"))
     }
-    
+
     const props = {
         onSave: handleCreateTable,
-        onCancel: _ => navigate("/")        
-    }    
+        onCancel: _ => navigate("/")
+    }
 
     return (
         <>
