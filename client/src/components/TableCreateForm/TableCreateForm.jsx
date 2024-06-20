@@ -7,16 +7,16 @@ export default function TableCreateForm(props) {
     } = props;
 
     const [name, setName] = useState("");
-    const [latitude, setLatitude] = useState(0);
-    const [longitude, setLongitude] = useState(0);
+    const [lat, setLat] = useState(0);
+    const [lon, setLon] = useState(0);
     
     const onSubmit = e => {
         e.preventDefault();
         
         return onSave({
             name,
-            latitude,
-            longitude
+            lat,
+            lon
         })
     };
     
@@ -35,22 +35,22 @@ export default function TableCreateForm(props) {
                     />
                 </div>
                 <div>
-                    <label htmlFor="latitude">Latitude:</label>
+                    <label htmlFor="lat">Latitude:</label>
                     <input 
-                        value={latitude}
-                        onChange={e => setLatitude(e.target.value)}
+                        value={lat}
+                        onChange={e => setLat(e.target.value)}
                         type="number"
-                        name="latitude"
-                        id="latitude"
+                        name="lat"
+                        id="lat"
                     />
                 </div>
                 <div>
-                    <label htmlFor="longitude">Longitude:</label>
+                    <label htmlFor="lon">Longitude:</label>
                     <input
-                        value={longitude} onChange={e => setLongitude(e.target.value)}
+                        value={lon} onChange={e => setLon(e.target.value)}
                         type="number"
-                        name="longitude"
-                        id="longitude"
+                        name="lon"
+                        id="lon"
                     />
                 </div>
                 <button type="submit">Submit</button>
