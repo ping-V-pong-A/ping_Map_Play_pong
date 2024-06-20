@@ -12,7 +12,7 @@ const sessionTimeout = () => {
         if (!isLoggedIn || (logoutTime && new Date().getTime() > logoutTime)) {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('logoutTime');
-            navigate('/signin');
+            navigate('/sign-in');
         }
     }, [navigate]);
 };
