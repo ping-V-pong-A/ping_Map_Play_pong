@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Controllers;
@@ -113,19 +114,19 @@ public class CheckingInController : ControllerBase
     }
     
     [HttpPost("checkingIns/add")]
-    public ActionResult<string> Post(int userId, int tableId, DateTime startTime, DateTime endTime)
+    public ActionResult<string> Post([FromBody] CheckInRequest request)
     {
         try
         {
-            var user = _userRepository.GetById(userId);
-            var table = _tableRepository.GetByTableId(tableId);
+            var user = _userRepository.GetById(request.UserId);
+            var table = _tableRepository.GetByTableId(request.TableId);
             
             var newCheckingIn = new CheckingIn
             {
                 UserId = user.Id,
                 TableId = table.Id,
-                StartDate = startTime,
-                EndDate = endTime
+                StartDate = request.Start,
+                EndDate = request.End
             };
             _checkingInRepository.Add(newCheckingIn);
             
