@@ -32,7 +32,7 @@ export default function Map({tables}) {
                     <Marker key={c} position={c}>
                         <Popup>
                             <button>
-                                <Link to="/sing-in">Sign In</Link>
+                                <Link to="/sign-in">Sign In</Link>
                             </button>
                             {c}
                         </Popup>
