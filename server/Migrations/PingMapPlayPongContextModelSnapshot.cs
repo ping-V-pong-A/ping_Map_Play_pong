@@ -245,8 +245,6 @@ namespace ping_Map_Play_pong.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("CheckingIns");
                 });
 
@@ -477,21 +475,11 @@ namespace ping_Map_Play_pong.Migrations
 
             modelBuilder.Entity("ping_Map_Play_pong.Model.DataModels.CheckingIn", b =>
                 {
-                    b.HasOne("ping_Map_Play_pong.Model.DataModels.Table", "Table")
+                    b.HasOne("ping_Map_Play_pong.Model.DataModels.Table", null)
                         .WithMany("CheckingIns")
                         .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ping_Map_Play_pong.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Table");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ping_Map_Play_pong.Model.DataModels.Match", b =>
@@ -508,25 +496,23 @@ namespace ping_Map_Play_pong.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("ping_Map_Play_pong.Model.DataModels.Table", "Table")
+                    b.HasOne("ping_Map_Play_pong.Model.DataModels.Table", null)
                         .WithMany("LeaderBoard")
                         .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Player1");
 
                     b.Navigation("Player2");
-
-                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("ping_Map_Play_pong.Model.DataModels.PairMatch", b =>
                 {
-                    b.HasOne("ping_Map_Play_pong.Model.DataModels.Table", "Table")
+                    b.HasOne("ping_Map_Play_pong.Model.DataModels.Table", null)
                         .WithMany("PairMatchesLeaderBoard")
                         .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ping_Map_Play_pong.Model.DataModels.Team", "Team1")
@@ -540,8 +526,6 @@ namespace ping_Map_Play_pong.Migrations
                         .HasForeignKey("Team2Id")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Table");
 
                     b.Navigation("Team1");
 

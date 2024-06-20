@@ -142,7 +142,7 @@ public class MatchController : ControllerBase
             
             var newMatch = new Match
             {
-                Table = table,
+                TableId = table.Id,
                 Player1 = player1,
                 Player2 = player2,
                 StartDate = startTime,

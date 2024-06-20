@@ -122,8 +122,8 @@ public class CheckingInController : ControllerBase
             
             var newCheckingIn = new CheckingIn
             {
-                User = user,
-                Table = table,
+                UserId = user.Id,
+                TableId = table.Id,
                 StartDate = startTime,
                 EndDate = endTime
             };

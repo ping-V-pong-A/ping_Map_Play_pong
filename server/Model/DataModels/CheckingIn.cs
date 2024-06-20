@@ -9,10 +9,10 @@ public class CheckingIn
     public int Id { get; init; }
     
     [ForeignKey("UserId")]
-    public User User { get; init; }
+    public int UserId { get; init; }
     
     [ForeignKey("TableId")]
-    public Table Table { get; init; }
+    public int TableId { get; init; }
     
     public DateTime StartDate { get; init; }
     public DateTime EndDate { get; init; }

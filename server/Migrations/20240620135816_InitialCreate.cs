@@ -261,12 +261,6 @@ namespace ping_Map_Play_pong.Migrations
                         principalTable: "Tables",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CheckingIns_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -290,7 +284,8 @@ namespace ping_Map_Play_pong.Migrations
                         name: "FK_Matches_Tables_TableId",
                         column: x => x.TableId,
                         principalTable: "Tables",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Matches_Users_Player1Id",
                         column: x => x.Player1Id,
@@ -324,7 +319,8 @@ namespace ping_Map_Play_pong.Migrations
                         name: "FK_PairMatches_Tables_TableId",
                         column: x => x.TableId,
                         principalTable: "Tables",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PairMatches_Teams_Team1Id",
                         column: x => x.Team1Id,
@@ -380,11 +376,6 @@ namespace ping_Map_Play_pong.Migrations
                 name: "IX_CheckingIns_TableId",
                 table: "CheckingIns",
                 column: "TableId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CheckingIns_UserId",
-                table: "CheckingIns",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matches_Player1Id",
