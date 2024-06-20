@@ -6,7 +6,7 @@ using ping_Map_Play_pong.Service.Authentication;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authenticationService;
