@@ -52,8 +52,10 @@ public class AuthController : ControllerBase
     [HttpPost("Login")]
     public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
     {
+        Console.WriteLine($"Received AuthRequest: Email={request.Email}, Password={request.Password}");
         if (!ModelState.IsValid)
         {
+           
             return BadRequest(ModelState);
         }
 
@@ -61,10 +63,14 @@ public class AuthController : ControllerBase
 
         if (!result.Success)
         {
+         
             AddErrors(result);
             return BadRequest(ModelState);
         }
 
+        // Set the cookie here
+        HttpContext.Response.Cookies.Append("access_token", result.Token, new CookieOptions { HttpOnly = true });
+      
         return Ok(new AuthResponse(result.Email, result.UserName, result.Token));
     }
 }
