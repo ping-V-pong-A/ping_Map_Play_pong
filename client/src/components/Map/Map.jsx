@@ -3,18 +3,29 @@ import React, {useState} from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import {Link} from "react-router-dom";
 
-function LocationMarker({ setPosition }) {
-    useMapEvents({
-        click(e) {
-            setPosition(e.latlng);
+function UserLocationMarker() {
+    const [position, setPosition] = useState(null)
+    const map = useMapEvents({
+        click() {
+            map.locate()
         },
-    });
-    return null;
+        locationfound(e) {
+            setPosition(e.latlng)
+            map.flyTo(e.latlng, map.getZoom())
+        },
+    })
+
+    return position === null ? null : (
+        <Marker position={position}>
+            <Popup>You are here</Popup>
+        </Marker>
+    )
 }
 
 export default function Map({tables, profile, handleCheckIn}) {
     const [position, setPosition] = useState(null);
     const [checkSwitch, setCheckSwitch] = useState(false)
+    
     const [checkIn, setCheckIn] = useState({
         userId: profile ? profile.id : "",
         tableId: 0,
@@ -68,6 +79,7 @@ export default function Map({tables, profile, handleCheckIn}) {
                         </Popup>
                     </Marker>
                 ))}
+                <UserLocationMarker />
             </MapContainer>
 
     );
