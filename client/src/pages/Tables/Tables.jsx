@@ -56,7 +56,7 @@ export default function Tables() {
             <Loading/>
         ) : (
             <>
-                <button onClick={_ => setListMapSwitch(!listMapSwitch)}>List / Map</button>
+                <button onClick={_ => setListMapSwitch(!listMapSwitch)}>{listMapSwitch ? "Map" : "List"}</button>
                 <button onClick={addNewTableHandler}>Add new table</button>
                 {listMapSwitch ?
                 <TableList {...props}/>                    
