@@ -3,7 +3,6 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 import {useProfile} from "../../contexts/ProfileContext.jsx";
 
-import SessionTimeout from "../../components/sessionTimeout/sessionTimeout.js";
 import Map from "../../components/Map/Map.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import TableList from "../../components/TableList/TableList.jsx";
@@ -24,7 +23,6 @@ const postCheckIn = (checkIn) => fetch('/api/CheckingIn/checkingIns/add', {
 
 export default function Tables() {
     
-    SessionTimeout();
     const navigate = useNavigate()
     const {profile} = useProfile();
     const [loading, setLoading] = useState(true)
