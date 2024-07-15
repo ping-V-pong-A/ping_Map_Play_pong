@@ -20,21 +20,13 @@ const postSignIn = (user) => fetch('/api/Auth/Login', {
 const getUserByUserName = (userName) => fetch(`/api/User/users/name/${userName}`)
     .then(resp => resp.json())
 
-
-
 export default function SignIn() {
     const navigate = useNavigate();
     const {setProfile, login } = useProfile();
 
-
-
     const handleSignIn = (user) => {
         postSignIn(user)
-            .then(data => {
-                localStorage.setItem('isLoggedIn', true);
-                const logoutTime = new Date();
-                logoutTime.setMinutes(logoutTime.getMinutes() + 30);
-                localStorage.setItem('logoutTime', logoutTime.getTime());
+            .then(data => {              
                 login();
                 navigate('/tables');
                 return data;
