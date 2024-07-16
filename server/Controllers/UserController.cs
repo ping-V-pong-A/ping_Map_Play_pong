@@ -50,7 +50,21 @@ public class UserController : ControllerBase
         }
     }
     
-    [HttpGet("users/name/{userName}")]
+    [HttpGet("users/email/{userEmail}")]
+    public ActionResult<User> GetByEmail(string userEmail)
+    {
+        try
+        {
+            return Ok(_userRepository.GetByEmail(userEmail));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return NotFound($"user with id:{userEmail} not exist in DB");
+        }
+    }
+    
+    /*[HttpGet("users/name/{userName}")]
     public async Task<ActionResult<User>> GetByName(string userName)
     {
         try
@@ -69,7 +83,7 @@ public class UserController : ControllerBase
             _logger.LogError(e.Message);
             return StatusCode(500, $"Internal server error: {e.Message}");
         }
-    }
+    }*/
 
     
     /*
