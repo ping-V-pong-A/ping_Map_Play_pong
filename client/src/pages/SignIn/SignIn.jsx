@@ -26,7 +26,7 @@ export default function SignIn() {
 
     const handleSignIn = (user) => {
         postSignIn(user)
-            .then(data => {              
+            .then(data => {
                 login();
                 navigate('/tables');
                 return data;
