@@ -6,16 +6,20 @@ export const useProfile = () => {
     return useContext(ProfileContext);
 };
 
-export const ProfileContextProvider = ({ children }) => {   
+export const ProfileContextProvider = ({ children }) => {
     const [profile, setProfile] = useState(null)
-    
-    const login = () => {        
+
+    const login = () => {
         localStorage.setItem('isLoggedIn', true);
         const logoutTime = new Date();
         logoutTime.setMinutes(logoutTime.getMinutes() + 30);
         localStorage.setItem('logoutTime', logoutTime.getTime());
+
     }
-    const logout = () => localStorage.setItem('isLoggedIn', false);
+    const logout = () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('logoutTime' );
+    };
 
     return (
         <ProfileContext.Provider value={{profile, setProfile, login, logout }}>
