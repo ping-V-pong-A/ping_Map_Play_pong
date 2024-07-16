@@ -27,7 +27,7 @@ export default function Map({tables, profile, handleCheckIn}) {
     const [checkSwitch, setCheckSwitch] = useState(false)
     
     const [checkIn, setCheckIn] = useState({
-        userId: profile ? profile.id : "",
+        userId: profile ? profile.id : 1,
         tableId: 0,
         start: "",
         end: ""
@@ -48,12 +48,12 @@ export default function Map({tables, profile, handleCheckIn}) {
                 {tables.map(t => (
                     <Marker key={t.id} position={[t.lat, t.lon]}>
                         <Popup>
-                            <button onClick={_=> {
+                            <button onClick={e=> {
                                 setCheckIn({...checkIn, tableId: t.id})
-                                setCheckSwitch(!checkSwitch)}
-                            }>
-                            Check-In    
-                            </button>
+                                setCheckSwitch(!checkSwitch)}}
+                            >
+                                {checkSwitch ? "Cancel" : "Check-In" }                               
+                            </button>                            
                             {checkSwitch &&
                                 <form onSubmit={onSubmit}>
                                     <div>
