@@ -18,7 +18,7 @@ const postCheckIn = (checkIn) => fetch('/api/CheckingIn/checkingIns/add', {
     credentials: 'include',
     body: JSON.stringify(checkIn)
 })
-    .then((res) => res.json())
+    .then((resp) => resp.json())
     .catch((error) => console.error('Error:', error))
 
 export default function Tables() {
