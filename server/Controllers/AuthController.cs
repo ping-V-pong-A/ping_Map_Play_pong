@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using ping_Map_Play_pong.Contracts;
+using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Service.Authentication;
+using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Controllers;
 
@@ -9,13 +11,15 @@ namespace ping_Map_Play_pong.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IUserRepository _userRepository;
     private readonly IAuthService _authenticationService;
     private readonly IConfiguration _configuration;
 
-    public AuthController(IAuthService authenticationService, IConfiguration configuration)
+    public AuthController(IAuthService authenticationService, IConfiguration configuration, IUserRepository userRepository)
     {
         _authenticationService = authenticationService;
         _configuration = configuration;
+        _userRepository = userRepository;
     }
 
     [HttpPost("Register")]
@@ -50,12 +54,11 @@ public class AuthController : ControllerBase
     
     
     [HttpPost("Login")]
-    public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
+    public async Task<ActionResult<User>> Authenticate([FromBody] AuthRequest request)
     {
         Console.WriteLine($"Received AuthRequest: Email={request.Email}, Password={request.Password}");
         if (!ModelState.IsValid)
         {
-            
             return BadRequest(ModelState);
         }
 
@@ -63,15 +66,16 @@ public class AuthController : ControllerBase
 
         if (!result.Success)
         {
-         
             AddErrors(result);
             return BadRequest(ModelState);
         }
 
+        var user = _userRepository.GetByEmail(result.Email);
+
         // Set the cookie here
         HttpContext.Response.Cookies.Append("access_token", result.Token, new CookieOptions { HttpOnly = true, Expires = DateTime.Now.AddMinutes(30)});
       
-        return Ok(new AuthResponse(result.Email, result.UserName, result.Token));
+        return Ok(user);
     }
     
     
