@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
-using ping_Map_Play_pong.Service.Repositories;
-
+using ping_Map_Play_pong.Model.RequestModels;
+using ping_Map_Play_pong.Service;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
@@ -10,16 +10,12 @@ namespace ping_Map_Play_pong.Controllers;
 public class MatchController : ControllerBase
 {
     private readonly ILogger<MatchController> _logger;
-    private readonly IMatchRepository _matchRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ITableRepository _tableRepository;
+    private readonly IMatchService _matchService;
 
-    public MatchController(ILogger<MatchController> logger, IMatchRepository matchRepository, IUserRepository userRepository, ITableRepository tableRepository)
+    public MatchController(ILogger<MatchController> logger, IMatchService matchService)
     {
         _logger = logger;
-        _matchRepository = matchRepository;
-        _userRepository = userRepository;
-        _tableRepository = tableRepository;
+        _matchService = matchService;
     }
 
     [HttpGet(Name = "matches")]
@@ -27,7 +23,7 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var res = _matchRepository.GetAll().ToList();
+            var res = _matchService.GetAll().ToList();
             
             if (res.Count == 0) return NotFound("matches table is empty");
             
@@ -45,7 +41,7 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var res = _matchRepository.GetById(matchId);
+            var res = _matchService.GetById(matchId);
             
             if (res == null) return NotFound($"match with id:{matchId} not exist in DB");
             
@@ -59,13 +55,11 @@ public class MatchController : ControllerBase
     }
     
     [HttpGet("user/{userId}")]
-    public ActionResult<IEnumerable<Match>> GetByPlayerIds(int userId)
+    public ActionResult<IEnumerable<Match>> GetByUserId(int userId)
     {
         try
         {
-            var res = _matchRepository.GetByUserId(userId).ToList();
-            
-            return Ok(res);
+            return Ok(_matchService.GetByUserId(userId));
         }
         catch (Exception e)
         {
@@ -75,15 +69,11 @@ public class MatchController : ControllerBase
     }
     
     [HttpGet("players/{player1Id}&{player2Id}")]
-    public ActionResult<IEnumerable<Match>> GetByPlayerIds(int player1Id, int player2Id)
+    public ActionResult<IEnumerable<Match>> GetByPlayersId(int player1Id, int player2Id)
     {
         try
         {
-            var res = _matchRepository.GetByPlayer1IdAndPlayer2Id(player1Id, player2Id).ToList();
-            
-            if (res.Count == 0) return NotFound($"match between player:{player1Id} and player:{player2Id} not exist in DB");
-            
-            return Ok(res);
+            return Ok(_matchService.GetByPlayersId(player1Id, player2Id));
         }
         catch (Exception e)
         {
@@ -93,15 +83,11 @@ public class MatchController : ControllerBase
     }
     
     [HttpGet("date/{date}")]
-    public ActionResult<IEnumerable<Match>> GetByTableId(DateTime date)
+    public ActionResult<IEnumerable<Match>> GetByDate(DateTime date)
     {
         try
         {
-            var res = _matchRepository.GetByDate(date).ToList();
-            
-            if (res.Count == 0) return NotFound($"match with date:{date} not exist in DB");
-            
-            return Ok(_matchRepository.GetByDate(date));
+           return Ok(_matchService.GetByDate(date));
         }
         catch (Exception e)
         {
@@ -111,25 +97,12 @@ public class MatchController : ControllerBase
     }
     
     [HttpPost("add")]
-    public ActionResult<string> Post(int tableId, int player1Id, int player2Id, DateTime startTime, DateTime endTime)
+    public ActionResult<string> Post([FromBody] MatchRequest request)
     {
         try
         {
-            var table = _tableRepository.GetByTableId(tableId);
-            if (table == null) return NotFound($"table with date:{tableId} not exist in DB");
-            var player1 = _userRepository.GetById(player1Id);
-            var player2 = _userRepository.GetById(player2Id);
-            
-            var newMatch = new Match
-            {
-                TableId = table.Id,
-                Player1 = player1,
-                Player2 = player2,
-                StartDate = startTime,
-                EndDate = endTime
-            };
-            _matchRepository.Add(newMatch);
-            
+            _matchService.PostToDb(request);
+            _logger.LogInformation("success added new match");
             return Ok("success added new match");
         }
         catch (Exception e)
@@ -144,15 +117,17 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var match = _matchRepository.GetById(matchId);
+            var match = _matchService.GetById(matchId);
             
-            _matchRepository.Update(match);
+            if (match == null) return NotFound($"match with id:{matchId} not exist in DB");
+            
+            _matchService.Update(match);
             return Ok("successful update");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match with id:{matchId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 
@@ -161,15 +136,17 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var match = _matchRepository.GetById(matchId);
+            var match = _matchService.GetById(matchId);
             
-            _matchRepository.Delete(match);
+            if (match == null) return NotFound($"match with id:{matchId} not exist in DB");
+            
+            _matchService.DeleteFromDb(match);
             return Ok("successful delete");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"match with id:{matchId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 }
