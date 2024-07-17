@@ -1,23 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
-using ping_Map_Play_pong.Service.Repositories;
+using ping_Map_Play_pong.Service;
 
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
 [Route("api/teams")]
-
 public class TeamController : ControllerBase
 {
     private readonly ILogger<TeamController> _logger;
-    private readonly ITeamRepository _teamRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly ITeamService _teamService;
 
-    public TeamController(ILogger<TeamController> logger, ITeamRepository teamRepository, IUserRepository userRepository)
+    public TeamController(ILogger<TeamController> logger, ITeamService teamService)
     {
         _logger = logger;
-        _teamRepository = teamRepository;
-        _userRepository = userRepository;
+        _teamService = teamService;
     }
 
     [HttpGet(Name = "teams")]
@@ -25,7 +22,7 @@ public class TeamController : ControllerBase
     {
         try
         {
-            return Ok(_teamRepository.GetAll());
+            return Ok(_teamService.GetAll());
         }
         catch (Exception e)
         {
@@ -39,7 +36,7 @@ public class TeamController : ControllerBase
     {
         try
         {
-            return Ok(_teamRepository.GetByUserId(userId));
+            return Ok(_teamService.GetByUserId(userId));
         }
         catch (Exception e)
         {
@@ -53,7 +50,7 @@ public class TeamController : ControllerBase
     {
         try
         {
-            return Ok(_teamRepository.GetByPlayersId(player1Id, player2Id));
+            return Ok(_teamService.GetByPlayersId(player1Id, player2Id));
         }
         catch (Exception e)
         {
@@ -67,15 +64,13 @@ public class TeamController : ControllerBase
     {
         try
         {
-            var player1 = _userRepository.GetById(player1Id);
-            var player2 = _userRepository.GetById(player2Id);
-                
-            var newTeam = new Team
+            if (_teamService.GetByPlayersId(player1Id, player2Id) == null)
             {
-                Player1 = player1,
-                Player2 = player2
-            };
-            _teamRepository.Add(newTeam);
+                _logger.LogInformation("This team already exist");
+                return BadRequest("This team already exist");
+            }
+            
+            _teamService.PostToDb(player1Id, player2Id);
             
             return Ok("success added new team");
         }
@@ -91,9 +86,7 @@ public class TeamController : ControllerBase
     {
         try
         {
-            var team = _teamRepository.GetById(teamId);
-            
-            _teamRepository.Delete(team);
+            _teamService.DeleteFromDb(teamId);
             return Ok("successful delete");
         }
         catch (Exception e)

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
-using ping_Map_Play_pong.Service.Repositories;
-
+using ping_Map_Play_pong.Model.RequestModels;
+using ping_Map_Play_pong.Service;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
@@ -10,16 +10,12 @@ namespace ping_Map_Play_pong.Controllers;
 public class PairMatchController : ControllerBase
 {
     private readonly ILogger<PairMatchController> _logger;
-    private readonly IPairMatchRepository _pairPairMatchRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ITableRepository _tableRepository;
+    private readonly IPairMatchService _pairMatchService;
 
-    public PairMatchController(ILogger<PairMatchController> logger, IPairMatchRepository pairPairMatchRepository, IUserRepository userRepository, ITableRepository tableRepository)
+    public PairMatchController(ILogger<PairMatchController> logger, IPairMatchService pairMatchService)
     {
         _logger = logger;
-        _pairPairMatchRepository = pairPairMatchRepository;
-        _userRepository = userRepository;
-        _tableRepository = tableRepository;
+        _pairMatchService = pairMatchService;
     }
 
     [HttpGet(Name = "pair-matches")]
@@ -27,7 +23,7 @@ public class PairMatchController : ControllerBase
     {
         try
         {
-            return Ok(_pairPairMatchRepository.GetAll());
+            return Ok(_pairMatchService.GetAll());
         }
         catch (Exception e)
         {
@@ -37,11 +33,11 @@ public class PairMatchController : ControllerBase
     }
     
     [HttpGet("date/{date}")]
-    public ActionResult<IEnumerable<PairMatch>> GetByTableId(DateTime date)
+    public ActionResult<IEnumerable<PairMatch>> GetByDate(DateTime date)
     {
         try
         {
-            return Ok(_pairPairMatchRepository.GetByDate(date));
+            return Ok(_pairMatchService.GetByDate(date));
         }
         catch (Exception e)
         {
@@ -50,48 +46,26 @@ public class PairMatchController : ControllerBase
         }
     }
     
-    [HttpGet("{pairPairMatchId}")]
-    public ActionResult<PairMatch> GetById(int pairPairMatchId)
+    [HttpGet("{pairMatchId}")]
+    public ActionResult<PairMatch> GetById(int pairMatchId)
     {
         try
         {
-            return Ok(_pairPairMatchRepository.GetById(pairPairMatchId));
+            return Ok(_pairMatchService.GetById(pairMatchId));
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"pairPairMatch with id:{pairPairMatchId} not exist in DB");
+            return NotFound($"pairPairMatch with id:{pairMatchId} not exist in DB");
         }
     }
     
     [HttpPost("add")]
-    public ActionResult<string> Post(int tableId, int team1Player1Id, int team1Player2Id, int team2Player1Id, int team2Player2Id, DateTime startTime, DateTime endTime)
+    public ActionResult<string> Post([FromBody] PairMatchRequest request)
     {
         try
         {
-            var table = _tableRepository.GetByTableId(tableId);
-            
-            var team1 = new Team
-            {
-                Player1 = _userRepository.GetById(team1Player1Id),
-                Player2 = _userRepository.GetById(team1Player2Id)
-            };
-                
-            var team2 = new Team
-            {
-                Player1 = _userRepository.GetById(team2Player2Id),
-                Player2 = _userRepository.GetById(team2Player1Id)
-            };
-            
-            var newPairMatch = new PairMatch
-            {
-                TableId = table.Id,
-                Team1 = team1,
-                Team2 = team2,
-                StartDate = startTime,
-                EndDate = endTime
-            };
-            _pairPairMatchRepository.Add(newPairMatch);
+            _pairMatchService.PostToDb(request);
             
             return Ok("success added new pairPairMatch");
         }
@@ -102,37 +76,41 @@ public class PairMatchController : ControllerBase
         }
     }
 
-    [HttpPatch("update/{pairPairMatchId}")]
-    public ActionResult<string> Update(int pairPairMatchId)
+    [HttpPatch("update/{pairMatchId}")]
+    public ActionResult<string> Update(int pairMatchId)
     {
         try
         {
-            var pairPairMatch = _pairPairMatchRepository.GetById(pairPairMatchId);
+            var pairMatch = _pairMatchService.GetById(pairMatchId);
             
-            _pairPairMatchRepository.Update(pairPairMatch);
+            if (pairMatch == null) return NotFound($"match with id:{pairMatchId} not exist in DB");
+            
+            _pairMatchService.Update(pairMatch);
             return Ok("successful update");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"pairPairMatch with id:{pairPairMatchId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 
-    [HttpDelete("delete/{pairPairMatchId}")]
-    public ActionResult<string> Delete(int pairPairMatchId)
+    [HttpDelete("delete/{pairMatchId}")]
+    public ActionResult<string> Delete(int pairMatchId)
     {
         try
         {
-            var pairPairMatch = _pairPairMatchRepository.GetById(pairPairMatchId);
+            var pairMatch = _pairMatchService.GetById(pairMatchId);
             
-            _pairPairMatchRepository.Delete(pairPairMatch);
+            if (pairMatch == null) return NotFound($"match with id:{pairMatchId} not exist in DB");
+            
+            _pairMatchService.DeleteFromDb(pairMatch);
             return Ok("successful delete");
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"pairPairMatch with id:{pairPairMatchId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 }

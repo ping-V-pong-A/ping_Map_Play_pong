@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.RequestModels;
-using ping_Map_Play_pong.Service.Repositories;
+using ping_Map_Play_pong.Service;
 
 namespace ping_Map_Play_pong.Controllers;
 
@@ -11,16 +11,12 @@ namespace ping_Map_Play_pong.Controllers;
 public class CheckingInController : ControllerBase
 {
     private readonly ILogger<CheckingInController> _logger;
-    private readonly ICheckingInRepository _checkingInRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ITableRepository _tableRepository;
+    private readonly ICheckingInService _checkingInService;
 
-    public CheckingInController(ILogger<CheckingInController> logger, ICheckingInRepository checkingInRepository, IUserRepository userRepository, ITableRepository tableRepository)
+    public CheckingInController(ILogger<CheckingInController> logger, ICheckingInService checkingInService)
     {
         _logger = logger;
-        _checkingInRepository = checkingInRepository;
-        _userRepository = userRepository;
-        _tableRepository = tableRepository;
+        _checkingInService = checkingInService;
     }
 
     [HttpGet(Name = "check-ins")]
@@ -28,11 +24,7 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            var res = _checkingInRepository.GetAll().ToList();
-            
-            if (res.Count == 0) return NotFound("checkingIns table is empty");
-            
-            return Ok(res);
+            return Ok(_checkingInService.GetAll());
         }
         catch (Exception e)
         {
@@ -46,11 +38,7 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            var res = _checkingInRepository.GetByUserId(userId).ToList();
-            
-            if (res.Count == 0) return NotFound($"checkingIn with userId:{userId} not exist in DB");
-            
-            return Ok(res);
+            return Ok( _checkingInService.GetByUserId(userId));
         }
         catch (Exception e)
         {
@@ -64,17 +52,7 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            var user = _userRepository.GetById(request.UserId);
-            var table = _tableRepository.GetByTableId(request.TableId);
-            
-            var newCheckingIn = new CheckingIn
-            {
-                UserId = user.Id,
-                TableId = table.Id,
-                StartDate = request.Start,
-                EndDate = request.End
-            };
-            _checkingInRepository.Add(newCheckingIn);
+            _checkingInService.PostToDb(request);
             
             return Ok("success added new checkingIn");
         }
@@ -90,11 +68,12 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            var checkingIn = _checkingInRepository.GetById(checkingInId);
+            var checkingIn = _checkingInService.GetById(checkingInId);
             
             if (checkingIn == null) return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
             
-            _checkingInRepository.Update(checkingIn);
+            _checkingInService.Update(checkingIn);
+            
             return Ok("successful update");
         }
         catch (Exception e)
@@ -109,11 +88,11 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            var checkingIn = _checkingInRepository.GetById(checkingInId);
+            var checkingIn = _checkingInService.GetById(checkingInId);
             
             if (checkingIn == null) return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
             
-            _checkingInRepository.Delete(checkingIn);
+            _checkingInService.DeleteFromDb(checkingIn);
             return Ok("successful delete");
         }
         catch (Exception e)
