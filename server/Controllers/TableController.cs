@@ -1,34 +1,23 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Model.ResponseModels;
 using ping_Map_Play_pong.Service.Repositories;
-using System.Text.Json;
 
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/tables")]
 
 public class TableController : ControllerBase
 {
     private readonly ILogger<TableController> _logger;
     private readonly ITableRepository _tableRepository;
-    private readonly ICoordinateRepository _coordinateRepository;
-    private readonly ICheckingInRepository _checkingInRepository;
-    private readonly IMatchRepository _matchRepository;
-    private readonly IPairMatchRepository _pairMatchRepository;
 
-    public TableController(ILogger<TableController> logger, ITableRepository tableRepository, ICoordinateRepository coordinateRepository, IMatchRepository matchRepository, ICheckingInRepository checkingInRepository, IPairMatchRepository pairMatchRepository)
+    public TableController(ILogger<TableController> logger, ITableRepository tableRepository)
     {
         _logger = logger;
         _tableRepository = tableRepository;
-        _coordinateRepository = coordinateRepository;
-        _matchRepository = matchRepository;
-        _checkingInRepository = checkingInRepository;
-        _pairMatchRepository = pairMatchRepository;
     }
 
     [HttpGet(Name = "tables")]
@@ -41,11 +30,11 @@ public class TableController : ControllerBase
             {
                 Id = table.Id,
                 Name = table.Name,
-                Lat = _coordinateRepository.GetById(table.Coordinate.Id).Lat,
-                Lon = _coordinateRepository.GetById(table.Coordinate.Id).Lon,
-                CheckingIns = _checkingInRepository.GetByTableId(table.Id).ToList(),
-                Matches = _matchRepository.GetByTableId(table.Id).ToList(),
-                PairMatches = _pairMatchRepository.GetByTableId(table.Id).ToList()
+                Lat = table.Coordinate.Lat,
+                Lon = table.Coordinate.Lon,
+                CheckingIns = table.CheckingIns.ToList(),
+                Matches = table.LeaderBoard.ToList(),
+                PairMatches = table.PairMatchesLeaderBoard.ToList()
             }).ToList();
 
             return Ok(respTables);
@@ -57,7 +46,7 @@ public class TableController : ControllerBase
         }
     }
 
-    [HttpGet("tables/id/{tableId}")]
+    [HttpGet("{tableId}")]
     public ActionResult<Table> GetById(int tableId)
     {
         try
@@ -71,21 +60,7 @@ public class TableController : ControllerBase
         }
     }
     
-    [HttpGet("tables/name/{tableName}")]
-    public ActionResult<Table> GetByName(string tableName)
-    {
-        try
-        {
-            return Ok(_tableRepository.GetByTableName(tableName));
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return NotFound($"table with id:{tableName} not exist in DB");
-        }
-    }
-    
-    [HttpPost("tables/add")]
+    [HttpPost("add")]
     public IActionResult Post([FromBody] TableRequest request)
     {
         try
@@ -112,9 +87,8 @@ public class TableController : ControllerBase
             return BadRequest(new { message = "registration error" });
         }
     }
-   
 
-    [HttpPatch("tables/id/{tableId}")]
+    [HttpPatch("update/{tableId}")]
     public IActionResult Patch(int tableId, [FromBody] TableRequest request)
     {
         try
@@ -145,11 +119,8 @@ public class TableController : ControllerBase
             return BadRequest(new { message = "Failed to update table" });
         }
     }
-
     
-    
-    
-    [HttpDelete("tables/id/{tableId}")]
+    [HttpDelete("delete/{tableId}")]
     public ActionResult<string> Delete(int tableId)
     {
         try
