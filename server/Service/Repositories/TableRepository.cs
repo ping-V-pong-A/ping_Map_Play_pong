@@ -25,16 +25,6 @@ public class TableRepository : ITableRepository
         return tables;
     }
 
-
-    public Table GetByTableName(string tableName)
-    {
-        return _dbContext.Tables
-            .Include(table => table.CheckingIns)
-            .ToList()
-            .FirstOrDefault(t => t.Name == tableName);
-    }
-
-
     public Table GetByTableId(int tableId)
     {
         return _dbContext.Tables
@@ -45,7 +35,6 @@ public class TableRepository : ITableRepository
             .ToList()
             .FirstOrDefault(t => t.Id == tableId);
     }
-
 
     public void Add(Table table)
     {
@@ -64,5 +53,4 @@ public class TableRepository : ITableRepository
         _dbContext.Update(table);
         _dbContext.SaveChanges();
     }
-    
 }

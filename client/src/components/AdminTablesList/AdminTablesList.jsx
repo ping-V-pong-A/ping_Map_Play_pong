@@ -1,36 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import AdminTableEditor from "../../components/AdminTableEditor/AdminTableEditor.jsx";
 
+const getTables = () => fetch('/api/tables')
+    .then(resp => {
+        if (!resp.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return resp.json();
+    })
+    .catch(error => {
+        console.error('Error fetching tables:', error);
+    });
+
 const AdminTablesList = (props) => {
     const [allTables, setAllTables] = useState([]);
     const [editing, setEditing] = useState(false);
     const [editTable, setEditTable] = useState(null);
 
-
     useEffect(() => {
-        fetch('/api/Table')
-            .then(resp => {
-                if (!resp.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return resp.json();
-            })
-            .then(data => {
-                setAllTables(data);
-            })
-            .catch(error => {
-                console.error('Error fetching tables:', error);
-            });
+        getTables().then(data => setAllTables(data))
     }, [editing]);
 
-    const goBackHandler = () => {
-        props.onSaveData();
-    }
+    const goBackHandler = () =>  props.onSaveData();
 
-    const saveDataHandler = () =>{
-       setEditing(false);
-    }
-    
+    const saveDataHandler = () => setEditing(false);   
  
     const tableEditorHandler = (tableId) => {
         const tableToEdit = allTables.find(table => table.id === tableId);

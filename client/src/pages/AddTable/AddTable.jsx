@@ -5,7 +5,7 @@ import './AddTable.scss';
 import TableCreateForm from "../../components/TableCreateForm/TableCreateForm.jsx";
 
 const postTable = (table) => {
-    return fetch(`/api/Table/tables/add`, {
+    return fetch(`/api/tables/add`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

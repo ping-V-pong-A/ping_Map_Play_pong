@@ -6,7 +6,7 @@ using ping_Map_Play_pong.Service.Repositories;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/check-ins")]
 
 public class CheckingInController : ControllerBase
 {
@@ -23,7 +23,7 @@ public class CheckingInController : ControllerBase
         _tableRepository = tableRepository;
     }
 
-    [HttpGet(Name = "checkingIns")]
+    [HttpGet(Name = "check-ins")]
     public ActionResult<IEnumerable<CheckingIn>> GetAll()
     {
         try
@@ -40,26 +40,8 @@ public class CheckingInController : ControllerBase
             return BadRequest("something went wrong");
         }
     }
-
-    [HttpGet("checkingIns/table/{tableId}")]
-    public ActionResult<IEnumerable<CheckingIn>> GetByTableId(int tableId)
-    {
-        try
-        {
-            var res = _checkingInRepository.GetByTableId(tableId).ToList();
-            
-            if (res.Count == 0) return NotFound($"checkingIn with tableId:{tableId} not exist in DB");
-            
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
-        }
-    }
     
-    [HttpGet("checkingIns/user/{userId}")]
+    [HttpGet("user/{userId}")]
     public ActionResult<IEnumerable<CheckingIn>> GetByUserId(int userId)
     {
         try
@@ -77,43 +59,7 @@ public class CheckingInController : ControllerBase
         }
     }
     
-    [HttpGet("checkingIns/user/date")]
-    public ActionResult<IEnumerable<CheckingIn>> GetByUserIdAndDate(int userId, DateTime date)
-    {
-        try
-        {
-            var res = _checkingInRepository.GetByUserIdAndDate(userId, date).ToList();
-            
-            if (res.Count == 0) return NotFound($"checkingIn with userId:{userId} on this date:{date} not exist in DB");
-            
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
-        }
-    }
-    
-    [HttpGet("checkingIns/user/startdate")]
-    public ActionResult<IEnumerable<CheckingIn>> GetByUserIdAndStartDateTime(int userId, DateTime date)
-    {
-        try
-        {
-            var res = _checkingInRepository.GetByUserIdAndStartDateTime(userId, date);
-            
-            if (res == null) return NotFound($"checkingIn with userId:{userId} on this date:{date} not exist in DB");
-            
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
-        }
-    }
-    
-    [HttpPost("checkingIns/add")]
+    [HttpPost("add")]
     public ActionResult<string> Post([FromBody] CheckInRequest request)
     {
         try
@@ -139,7 +85,7 @@ public class CheckingInController : ControllerBase
         }
     }
 
-    [HttpPatch("checkingIns/id/{checkingInId}")]
+    [HttpPatch("update/{checkingInId}")]
     public ActionResult<string> Update(int checkingInId)
     {
         try
@@ -158,7 +104,7 @@ public class CheckingInController : ControllerBase
         }
     }
 
-    [HttpDelete("checkingIns/id/{checkingInId}")]
+    [HttpDelete("delete/{checkingInId}")]
     public ActionResult<string> Delete(int checkingInId)
     {
         try

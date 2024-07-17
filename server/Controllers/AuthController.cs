@@ -1,18 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using ping_Map_Play_pong.Contracts;
-using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Service.Authentication;
 using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
     private readonly IAuthService _authenticationService;
+    private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
 
     public AuthController(IAuthService authenticationService, IConfiguration configuration, IUserRepository userRepository)
@@ -22,7 +20,7 @@ public class AuthController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpPost("Register")]
+    [HttpPost("sign-up")]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
         if (!ModelState.IsValid)
@@ -41,20 +39,8 @@ public class AuthController : ControllerBase
         return CreatedAtAction(nameof(Register), new RegistrationResponse(result.Email, result.UserName));
     }
     
-    
-
-
-    private void AddErrors(AuthResult result)
-    {
-        foreach (var error in result.ErrorMessages)
-        {
-            ModelState.AddModelError(error.Key, error.Value);
-        }
-    }
-    
-    
-    [HttpPost("Login")]
-    public async Task<ActionResult<User>> Authenticate([FromBody] AuthRequest request)
+    [HttpPost("sign-in")]
+    public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
     {
         Console.WriteLine($"Received AuthRequest: Email={request.Email}, Password={request.Password}");
         if (!ModelState.IsValid)
@@ -71,19 +57,24 @@ public class AuthController : ControllerBase
         }
 
         var user = _userRepository.GetByEmail(result.Email);
-
-        // Set the cookie here
+        
         HttpContext.Response.Cookies.Append("access_token", result.Token, new CookieOptions { HttpOnly = true, Expires = DateTime.Now.AddMinutes(30)});
       
         return Ok(user);
     }
     
-    
-    
-    [HttpPost("Logout")]
+    [HttpPost("sign-out")]
     public IActionResult Logout()
     {
         HttpContext.Response.Cookies.Delete("access_token");
         return Ok();
+    }
+
+    private void AddErrors(AuthResult result)
+    {
+        foreach (var error in result.ErrorMessages)
+        {
+            ModelState.AddModelError(error.Key, error.Value);
+        }
     }
 }

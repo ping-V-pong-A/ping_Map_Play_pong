@@ -11,38 +11,21 @@ public class PairMatchRepository : IPairMatchRepository
     {
         _dbContext = context;
     }
-
-    public IEnumerable<PairMatch> GetByTableId(int tableId)
-    {
-        return _dbContext.PairMatches.Where(pm => pm.TableId == tableId);
-    }
-
-
+    
     public IEnumerable<PairMatch> GetAll()
     {
         return _dbContext.PairMatches.ToList();
     }
-    public IEnumerable<PairMatch> GetByUserId(int userId)
-    {
-        return _dbContext.PairMatches.Where(pm => 
-            (pm.Team1.Player1.Id == userId || 
-             pm.Team1.Player2.Id == userId || 
-             pm.Team2.Player1.Id == userId || 
-             pm.Team2.Player2.Id == userId));
-    }
-
 
     public IEnumerable<PairMatch> GetByDate(DateTime date)
     {
         return _dbContext.PairMatches.Where(pm => pm.StartDate.Date == date);
     }
 
-
     public PairMatch GetById(int matchId)
     {
         return _dbContext.PairMatches.FirstOrDefault(pm => pm.Id == matchId);
     }
-
 
     public void Add(PairMatch match)
     {
@@ -50,13 +33,11 @@ public class PairMatchRepository : IPairMatchRepository
         _dbContext.SaveChanges();
     }
 
-
     public void Delete(PairMatch match)
     {
         _dbContext.Remove(match);
         _dbContext.SaveChanges();
     }
-
 
     public void Update(PairMatch match)
     {

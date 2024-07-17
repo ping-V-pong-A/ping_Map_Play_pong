@@ -17,10 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<PingMapPlayPongContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQL_CONNECTION")));
 
-
-
 builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
-builder.Services.AddScoped<ICoordinateRepository, CoordinateRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
@@ -29,7 +26,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticationSeeder>();
-
 
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 var validIssuer = jwtSettingsSection["ValidIssuer"];

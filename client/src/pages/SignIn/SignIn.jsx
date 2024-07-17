@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useProfile } from '../../contexts/ProfileContext';
 import SignInForm from '../../components/SignInForm/SignInForm.jsx';
 
-const postSignIn = (user) => fetch('/api/Auth/Login', {
+const postSignIn = (user) => fetch('/api/auth/sign-in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

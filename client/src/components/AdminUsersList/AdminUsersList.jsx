@@ -1,51 +1,46 @@
 import React, { useState, useEffect } from 'react';
 
-const UsersList = (props) => {
-    
+const getUser = () => fetch('/api/users')
+    .then(resp => {
+        if (!resp.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return resp.json();
+    })
+    .catch(error => {
+        console.error('Error fetching users:', error);
+    });
+
+const deleteUser = (userId) => fetch(`/api/users/delete/${userId}`, {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+    .then(resp => {
+        if (!resp.ok) {
+            throw new Error('Network response was not ok');
+        }
+        console.log('User deleted successfully');
+    })
+    .catch(error => {
+        console.error('Error deleting user:', error);
+    }); 
+
+const UsersList = ({onSaveData}) => {    
     const [allUsers, setAllUsers] = useState([]);
     const [refreshNeeded, setRefreshNeeded] = useState(false)
 
     useEffect(() => {
-        fetch('/api/User')
-            .then(resp => {
-                if (!resp.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return resp.json();
-            })
-            .then(data => {
-                setAllUsers(data);
-            })
-            .catch(error => {
-                console.error('Error fetching users:', error);
-            });
+        getUser().then(data => setAllUsers(data));
     }, [refreshNeeded]);
-
     
-    const goBackHandler = () =>{
-        props.onSaveData();
-    }
+    const goBackHandler = () => onSaveData();
 
     const deleteUserHandler = (event) => {
-        fetch(`/api/User/users/id/${event.target.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(resp => {
-                if (!resp.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('User deleted successfully');
-                setRefreshNeeded(true);
-            })
-            .catch(error => {
-                console.error('Error deleting user:', error);
-            });
+        deleteUser(event.target.id)
+            .then(_ => setRefreshNeeded(true))
     };
-
-
 
     return (
         <>

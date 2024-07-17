@@ -5,7 +5,7 @@ using ping_Map_Play_pong.Service.Repositories;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/teams")]
 
 public class TeamController : ControllerBase
 {
@@ -34,8 +34,8 @@ public class TeamController : ControllerBase
         }
     }
 
-    [HttpGet("teams/id/{userId}")]
-    public ActionResult<Team> GetByUserId(int userId)
+    [HttpGet("{userId}")]
+    public ActionResult<IEnumerable<Team>> GetByUserId(int userId)
     {
         try
         {
@@ -48,7 +48,7 @@ public class TeamController : ControllerBase
         }
     }
     
-    [HttpGet("teams/players")]
+    [HttpGet("players/{player1Id}/{player2Id}")]
     public ActionResult<Team> GetByPlayersId(int player1Id, int player2Id)
     {
         try
@@ -62,7 +62,7 @@ public class TeamController : ControllerBase
         }
     }
     
-    [HttpPost("teams/add")]
+    [HttpPost("add")]
     public ActionResult<string> Post(int player1Id, int player2Id)
     {
         try
@@ -86,24 +86,7 @@ public class TeamController : ControllerBase
         }
     }
 
-    [HttpPatch("teams/id/{teamId}")]
-    public ActionResult<string> Update(int teamId)
-    {
-        try
-        {
-            var team = _teamRepository.GetById(teamId);
-            
-            _teamRepository.Update(team);
-            return Ok("successful update");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return NotFound($"team with id:{teamId} not exist in DB");
-        }
-    }
-
-    [HttpDelete("teams/id/{teamId}")]
+    [HttpDelete("delete/{teamId}")]
     public ActionResult<string> Delete(int teamId)
     {
         try

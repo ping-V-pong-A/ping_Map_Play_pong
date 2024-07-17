@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {Popup} from "react-leaflet";
 import CheckInToTable from "../CheckInToTable/CheckInToTable.jsx";
 import {useNavigate} from "react-router-dom";
 
@@ -52,40 +51,9 @@ export default function TableList({tables, checkIn, setCheckIn, handleCheckIn}) 
                                    </tbody>
                                </table>    
                            </li>
-                       ))}
-                   
-               </ul> 
-                    
-
+                       ))}                   
+               </ul>
             )}
         </>
     );
 }
-/*            <table>
-                <thead>
-                    <tr>
-                        <th><li>Id</li></th>
-                        <th><li>Name</li></th>
-                        <th><li>CheckIn</li></th>
-                        <th><li></li></th>                        
-                    </tr>
-                </thead>
-                <tbody>                 
-                    {tables && tables.map(table => (                  
-                        <tr key={table.id}>                            
-                            <td><li>{table.id}</li></td>
-                            <td><li>{table.name}</li></td>
-                            <td>
-                                <button onClick={_ => {
-                                    setCheckIn({...checkIn, tableId: table.id});
-                                    setCheckSwitch({...checkSwitch, id: table.id, switch: !checkSwitch.switch})
-                                }}>
-                                    checkIn
-         
-                                </button>
-                            </td>
-                            <td><button>details</button></td>
-                        </tr> 
-                    ))}
-                </tbody>
-            </table>*/

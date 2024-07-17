@@ -9,23 +9,13 @@ import { useNavigate } from "react-router-dom";
 import AdminTablesList from "../../components/AdminTablesList/AdminTablesList.jsx";
 export default function AdminPage() {
 
-    const [chosenTask, setChosenTask] = useState("");
+    const [chosenTask, setChosenTask] = useState("");    
     
+    const listAllUsersHandler = () => setChosenTask("usersList");
+
+    const listAllTablesHandler = () => setChosenTask("tablesList");    
     
-    const listAllUsersHandler = () =>{
-        setChosenTask("usersList");
-    }
-
-    const listAllTablesHandler = () =>{
-        setChosenTask("tablesList");
-    }
-
-
-
-
-    const saveDataHandler = () =>{
-        setChosenTask("");
-    }
+    const saveDataHandler = () => setChosenTask("");    
 
     return (
         <>

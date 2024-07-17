@@ -10,8 +10,7 @@ const AdminTableEditor = (props) => {
     });
 
     const goBackHandler = () =>{
-        props.onSaveData();
-        
+        props.onSaveData();        
     }
     
     const handleInputChange = (e) => {
@@ -21,13 +20,11 @@ const AdminTableEditor = (props) => {
             [name]: value
         }));
     };
-    
-    
 
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        fetch(`/api/Table/tables/id/${table.id}`, {
+        fetch(`/api/tables/update/${table.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
