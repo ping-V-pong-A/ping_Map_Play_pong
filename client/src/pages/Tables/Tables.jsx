@@ -7,10 +7,10 @@ import Map from "../../components/Map/Map.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import TableList from "../../components/TableList/TableList.jsx";
 
-const fetchAllTable = () => fetch('/api/Table')
+const fetchAllTable = () => fetch('/api/tables')
     .then(resp => resp.json())
 
-const postCheckIn = (checkIn) => fetch('/api/CheckingIn/checkingIns/add', {
+const postCheckIn = (checkIn) => fetch('/api/check-ins/add', {
     method: "POST",
     headers: {
         "Content-Type": "application/json"

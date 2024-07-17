@@ -2,7 +2,7 @@ import {useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import Loading from "../../components/Loading/Loading.jsx";
 
-const getTable = (tableId) => fetch(`/api/Table/tables/id/${tableId}`)
+const getTable = (tableId) => fetch(`/api/tables/${tableId}`)
     .then(resp => resp.json())
     .catch(err => console.error(err))
 

@@ -3,11 +3,11 @@ import {useProfile} from "../../contexts/ProfileContext.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import {useNavigate} from "react-router-dom";
 
-const getUserData = id => fetch(`api/User/users/id/${id}/`)
+const getUserData = id => fetch(`api/users/${id}/`)
     .then(resp => resp.json())
     .catch(error => console.error('Error:', error))
 
-const getUserMatches = id => fetch(`api/Match/matches/user/${id}`)
+const getUserMatches = id => fetch(`api/matches/user/${id}`)
     .then(resp => resp.json())
     .catch(error => console.error('Error:', error))
 
