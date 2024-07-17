@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ping_Map_Play_pong.Data;
+using ping_Map_Play_pong.Service;
 using ping_Map_Play_pong.Service.Authentication;
 using ping_Map_Play_pong.Service.Repositories;
 
@@ -21,7 +22,7 @@ builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
-builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
