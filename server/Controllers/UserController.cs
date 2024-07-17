@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model;
+using ping_Map_Play_pong.Model.ResponseModels;
 using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Controllers;
@@ -22,12 +23,21 @@ public class UserController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpGet(Name = "users"), ] 
+    [HttpGet(Name = "users"),]
     public ActionResult<IEnumerable<User>> GetAll()
     {
         try
         {
-            return Ok(_userRepository.GetAll());
+            var users = _userRepository.GetAll();
+            var respUsers = users.Select(user => new UserResponse
+            {
+                Id = user.Id,
+                RegistrationDate = user.RegistrationDate,
+                CheckedInTables = user.CheckedInTables.ToList(),
+                Rank = user.Rank
+            }).ToList();
+
+            return Ok(respUsers);
         }
         catch (Exception e)
         {
@@ -36,6 +46,9 @@ public class UserController : ControllerBase
         }
     }
 
+    
+
+    
     [HttpGet("users/id/{userId}")]
     public ActionResult<User> GetById(int userId)
     {

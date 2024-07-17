@@ -5,6 +5,7 @@ using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Model.ResponseModels;
 using ping_Map_Play_pong.Service.Repositories;
+using System.Text.Json;
 
 namespace ping_Map_Play_pong.Controllers;
 
@@ -111,26 +112,42 @@ public class TableController : ControllerBase
             return BadRequest(new { message = "registration error" });
         }
     }
+   
 
-    
-    
-    
     [HttpPatch("tables/id/{tableId}")]
-    public ActionResult<string> Update(int tableId)
+    public IActionResult Patch(int tableId, [FromBody] TableRequest request)
     {
         try
         {
             var table = _tableRepository.GetByTableId(tableId);
-            
+
+            if (table == null)
+            {
+                return NotFound($"Table with id:{tableId} not found");
+            }
+           
+            if (table.Coordinate == null)
+            {
+                table.Coordinate = new Coordinate();
+            }
+
+            table.Name = request.Name;
+            table.Coordinate.Lat = request.Lat;
+            table.Coordinate.Lon = request.Lon;
+
             _tableRepository.Update(table);
-            return Ok("successful update");
+
+            return Ok(new { message = "Successful update" });
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"table with id:{tableId} not exist in DB");
+            return BadRequest(new { message = "Failed to update table" });
         }
     }
+
+    
+    
     
     [HttpDelete("tables/id/{tableId}")]
     public ActionResult<string> Delete(int tableId)
