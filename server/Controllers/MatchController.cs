@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service;
-using ping_Map_Play_pong.Service.Repositories;
-
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
