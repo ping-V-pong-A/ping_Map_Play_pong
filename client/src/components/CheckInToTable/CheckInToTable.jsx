@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function CheckInToTable({ checkIn, setCheckIn, handleCheckIn, checkSwitch, setCheckSwitch}) {
+export default function CheckInToTable({checkIn, setCheckIn, handleCheckIn, checkSwitch, setCheckSwitch}) {
 
     const onSubmit = e => {
         e.preventDefault();
@@ -10,6 +10,9 @@ export default function CheckInToTable({ checkIn, setCheckIn, handleCheckIn, che
     
     return (
         <>
+            <div>                
+                <h2>check to the table #{checkIn.tableId}</h2>                
+            </div>
             <form onSubmit={onSubmit}>
                 <div>
                     <label htmlFor="start">Start:</label>
@@ -30,10 +33,9 @@ export default function CheckInToTable({ checkIn, setCheckIn, handleCheckIn, che
                     />
                 </div>
                 <button type="submit">Submit</button>
-                <button onClick={_ => {
-                    setCheckSwitch({...checkSwitch, switch:!checkSwitch.switch});
-                    console.log(checkIn)
-                }}>Cancel</button>
+                <button onClick={_ => setCheckSwitch({...checkSwitch, switch:!checkSwitch.switch})}>
+                    Cancel
+                </button>
             </form>
         </>
     )
