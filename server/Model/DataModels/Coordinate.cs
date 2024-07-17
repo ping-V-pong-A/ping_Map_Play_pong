@@ -6,7 +6,7 @@ public class Coordinate
 {
     [Key]
     public int Id { get; init; }
-    public double Lat { get; init; } 
-    public double Lon { get; init; }
+    public double Lat { get; set; } 
+    public double Lon { get; set; }
 }
 
