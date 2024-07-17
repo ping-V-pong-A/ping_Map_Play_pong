@@ -30,7 +30,6 @@ public class AuthService : IAuthService
         {
             return FailedRegistration(result, email, username);
         }
-
         
         await _userManager.AddToRoleAsync(user, role);
         var userEmail = user.Email;
@@ -41,26 +40,10 @@ public class AuthService : IAuthService
             IdentityUserEmail = userEmail,
             Rank = Rank.Beginner,
         };
-     
 
         _userRepository.Add(newUser);
         return new AuthResult(true, email, username, "");
     }
-
-    
-    
-    private static AuthResult FailedRegistration(IdentityResult result, string email, string username)
-    {
-        var authResult = new AuthResult(false, email, username, "");
-
-        foreach (var error in result.Errors)
-        {
-            authResult.ErrorMessages.Add(error.Code, error.Description);
-        }
-
-        return authResult;
-    }
-    
     
     public async Task<AuthResult> LoginAsync(string email, string password)
     {
@@ -79,22 +62,30 @@ public class AuthService : IAuthService
 
         var roles = await _userManager.GetRolesAsync(managedUser);
         var accessToken = _tokenService.CreateToken(managedUser, roles[0]);
-      
-      
-        return  new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
-        
 
+        var user = _userRepository.GetByEmail(managedUser.Email);
+
+        return  new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
     }
 
+    private static AuthResult FailedRegistration(IdentityResult result, string email, string username)
+    {
+        var authResult = new AuthResult(false, email, username, "");
+
+        foreach (var error in result.Errors)
+        {
+            authResult.ErrorMessages.Add(error.Code, error.Description);
+        }
+
+        return authResult;
+    }
+    
     private static AuthResult InvalidEmail(string email)
     {
         var result = new AuthResult(false, email, "", "");
         result.ErrorMessages.Add("Bad credentials", "Invalid email");
         return result;
     }
-    
-    
-
 
     private static AuthResult InvalidPassword(string email, string userName)
     {
