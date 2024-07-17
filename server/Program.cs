@@ -18,7 +18,7 @@ builder.Services.AddDbContext<PingMapPlayPongContext>(options =>
 
 builder.Services.AddScoped<ICheckingInService, CheckingInService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
-builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
+builder.Services.AddScoped<IPairMatchService, PairMatchService>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
