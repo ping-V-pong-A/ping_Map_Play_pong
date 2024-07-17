@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<PingMapPlayPongContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQL_CONNECTION")));
 
-builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
+builder.Services.AddScoped<ICheckingInService, CheckingInService>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
 builder.Services.AddScoped<ITableService, TableService>();
