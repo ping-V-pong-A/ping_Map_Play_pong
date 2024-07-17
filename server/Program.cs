@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Service;
 using ping_Map_Play_pong.Service.Authentication;
+using ping_Map_Play_pong.Service.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<PingMapPlayPongContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQL_CONNECTION")));
+
+builder.Services.AddScoped<ICheckingInRepository, CheckingInRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ICheckingInService, CheckingInService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
