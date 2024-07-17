@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Model.ResponseModels;
-using ping_Map_Play_pong.Service.Repositories;
+using ping_Map_Play_pong.Service;
 
 namespace ping_Map_Play_pong.Controllers;
 
@@ -12,12 +12,12 @@ namespace ping_Map_Play_pong.Controllers;
 public class TableController : ControllerBase
 {
     private readonly ILogger<TableController> _logger;
-    private readonly ITableRepository _tableRepository;
+    private readonly ITableService _tableService;
 
-    public TableController(ILogger<TableController> logger, ITableRepository tableRepository)
+    public TableController(ILogger<TableController> logger, ITableService tableService)
     {
         _logger = logger;
-        _tableRepository = tableRepository;
+        _tableService = tableService;
     }
 
     [HttpGet(Name = "tables")]
@@ -25,7 +25,8 @@ public class TableController : ControllerBase
     {
         try
         {
-            var tables = _tableRepository.GetAll();
+            var tables = _tableService.GetAll();
+            
             var respTables = tables.Select(table => new TableResponse
             {
                 Id = table.Id,
@@ -51,7 +52,7 @@ public class TableController : ControllerBase
     {
         try
         {
-            return Ok(_tableRepository.GetByTableId(tableId));
+            return Ok(_tableService.GetById(tableId));
         }
         catch (Exception e)
         {
@@ -77,7 +78,7 @@ public class TableController : ControllerBase
                 Coordinate = coordinate
             };
         
-            _tableRepository.Add(table);
+            _tableService.PostToDb(table);
         
             return Ok(new { message = "success registering" });
         }
@@ -93,7 +94,7 @@ public class TableController : ControllerBase
     {
         try
         {
-            var table = _tableRepository.GetByTableId(tableId);
+            var table = _tableService.GetById(tableId);
 
             if (table == null)
             {
@@ -109,7 +110,7 @@ public class TableController : ControllerBase
             table.Coordinate.Lat = request.Lat;
             table.Coordinate.Lon = request.Lon;
 
-            _tableRepository.Update(table);
+            _tableService.Update(table);
 
             return Ok(new { message = "Successful update" });
         }
@@ -125,9 +126,7 @@ public class TableController : ControllerBase
     {
         try
         {
-            var table = _tableRepository.GetByTableId(tableId);
-            
-            _tableRepository.Delete(table);
+            _tableService.Delete(tableId);
             return Ok("successful delete");
         }
         catch (Exception e)
