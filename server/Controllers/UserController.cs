@@ -8,7 +8,7 @@ using ping_Map_Play_pong.Service.Repositories;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 
 public class UserController : ControllerBase
 {
@@ -45,11 +45,8 @@ public class UserController : ControllerBase
             return NotFound("users table is empty");
         }
     }
-
     
-
-    
-    [HttpGet("users/id/{userId}")]
+    [HttpGet("{userId}")]
     public ActionResult<User> GetById(int userId)
     {
         try
@@ -62,68 +59,8 @@ public class UserController : ControllerBase
             return NotFound($"user with id:{userId} not exist in DB");
         }
     }
-    
-    [HttpGet("users/email/{userEmail}")]
-    public ActionResult<User> GetByEmail(string userEmail)
-    {
-        try
-        {
-            return Ok(_userRepository.GetByEmail(userEmail));
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return NotFound($"user with id:{userEmail} not exist in DB");
-        }
-    }
-    
-    /*[HttpGet("users/name/{userName}")]
-    public async Task<ActionResult<User>> GetByName(string userName)
-    {
-        try
-        {
-            var user = await _userRepository.GetByNameAsync(userName);
 
-            if (user == null)
-            {
-                return NotFound($"User with name '{userName}' not found");
-            }
-
-            return Ok(user);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return StatusCode(500, $"Internal server error: {e.Message}");
-        }
-    }*/
-
-    
-    /*
-    [HttpPost("users/register")]
-    public ActionResult<string> Post(string userName, string email, string password)
-    {
-        try
-        {
-            var newUser = new User
-            {
-                Name = userName,
-      
-                Rank = 0
-            };
-            
-            _userRepository.Add(newUser);
-            
-            return Ok("success registering");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return BadRequest("un success registering");
-        }
-    }*/
-
-    [HttpPatch("users/id/{userId}")]
+    [HttpPatch("update/{userId}")]
     public ActionResult<string> Update(int userId)
     {
         try
@@ -140,12 +77,13 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("users/id/{userId}")]
+    [HttpDelete("delete/{userId}")]
     public async Task<IActionResult> Delete(int userId)
     {
         try
         {
             var user = _userRepository.GetById(userId);
+            
             if (user == null)
             {
                 return NotFound($"User with ID:{userId} not found in database");
@@ -167,7 +105,6 @@ public class UserController : ControllerBase
             {
                 _logger.LogWarning($"Identity user not found for user ID: {userId}");
             }
-            
 
             return Ok("User successfully deleted");
         }
@@ -178,8 +115,4 @@ public class UserController : ControllerBase
                 "An error occurred while processing the request");
         }
     }
-
-
-    
-    
 }
