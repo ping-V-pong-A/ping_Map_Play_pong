@@ -30,10 +30,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
                         <Route path='/sign-up' element={<SignUp/>}/>
                         <Route path='/admin' element={<AdminPage/>}/>
-                        <Route element={<ProtectedRoutes/>}>
-
-                        <Route path='/sign-up' element={<SignUp/>}/>                        
-                        
 
                             <Route path='/tables' element={<Tables/>}/>
                             <Route path='/tables/table/:id' element={<Table/>}/>
