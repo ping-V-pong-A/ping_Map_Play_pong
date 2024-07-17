@@ -5,7 +5,7 @@ using ping_Map_Play_pong.Service.Repositories;
 namespace ping_Map_Play_pong.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/matches")]
 
 public class MatchController : ControllerBase
 {
@@ -40,7 +40,7 @@ public class MatchController : ControllerBase
         }
     }
 
-    [HttpGet("matches/{matchId}")]
+    [HttpGet("{matchId}")]
     public ActionResult<Match> GetById(int matchId)
     {
         try
@@ -58,44 +58,8 @@ public class MatchController : ControllerBase
         }
     }
     
-    [HttpGet("matches/table/{tableId}")]
-    public ActionResult<IEnumerable<Match>> GetByTableId(int tableId)
-    {
-        try
-        {
-            var res = _matchRepository.GetByTableId(tableId).ToList();
-            
-            if (res.Count == 0) return NotFound($"match with id:{tableId} not exist in DB");
-            
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
-        }
-    }
-    
-    [HttpGet("matches/user/{userId}")]
-    public ActionResult<IEnumerable<Match>> GetByUserId(int userId)
-    {
-        try
-        {
-            var res = _matchRepository.GetByUserId(userId).ToList();
-            
-            // if (res.Count == 0) return NotFound($"match with userId:{userId} not exist in DB");
-            
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
-        }
-    }
-    
-    [HttpGet("matches/players/{player1Id}&{player2Id}")]
-    public ActionResult<IEnumerable<Match>> GetByUserId(int player1Id, int player2Id)
+    [HttpGet("players/{player1Id}&{player2Id}")]
+    public ActionResult<IEnumerable<Match>> GetByPlayerIds(int player1Id, int player2Id)
     {
         try
         {
@@ -112,7 +76,7 @@ public class MatchController : ControllerBase
         }
     }
     
-    [HttpGet("matches/date/{date}")]
+    [HttpGet("date/{date}")]
     public ActionResult<IEnumerable<Match>> GetByTableId(DateTime date)
     {
         try
@@ -130,7 +94,7 @@ public class MatchController : ControllerBase
         }
     }
     
-    [HttpPost("matches/add")]
+    [HttpPost("add")]
     public ActionResult<string> Post(int tableId, int player1Id, int player2Id, DateTime startTime, DateTime endTime)
     {
         try
@@ -159,7 +123,7 @@ public class MatchController : ControllerBase
         }
     }
 
-    [HttpPatch("matches/id/{matchId}")]
+    [HttpPatch("update/{matchId}")]
     public ActionResult<string> Update(int matchId)
     {
         try
@@ -176,7 +140,7 @@ public class MatchController : ControllerBase
         }
     }
 
-    [HttpDelete("matches/id/{matchId}")]
+    [HttpDelete("delete/{matchId}")]
     public ActionResult<string> Delete(int matchId)
     {
         try
