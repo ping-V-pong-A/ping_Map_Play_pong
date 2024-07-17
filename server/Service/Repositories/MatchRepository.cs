@@ -27,7 +27,12 @@ public class MatchRepository : IMatchRepository
     {
         return _dbContext.Matches.Where(m => m.StartDate.Date == date);
     }
-    
+
+    public IEnumerable<Match> GetByUserId(int userId)
+    {
+        return _dbContext.Matches.Where(m => m.Player1.Id == userId || m.Player2.Id == userId);
+    }
+
     public Match GetById(int matchId)
     {
         return _dbContext.Matches.First(m => m.Id == matchId);

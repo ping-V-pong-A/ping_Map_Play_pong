@@ -58,6 +58,22 @@ public class MatchController : ControllerBase
         }
     }
     
+    [HttpGet("user/{userId}")]
+    public ActionResult<IEnumerable<Match>> GetByPlayerIds(int userId)
+    {
+        try
+        {
+            var res = _matchRepository.GetByUserId(userId).ToList();
+            
+            return Ok(res);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return BadRequest("something went wrong");
+        }
+    }
+    
     [HttpGet("players/{player1Id}&{player2Id}")]
     public ActionResult<IEnumerable<Match>> GetByPlayerIds(int player1Id, int player2Id)
     {
