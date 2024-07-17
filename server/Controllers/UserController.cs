@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model;
+using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Model.ResponseModels;
-using ping_Map_Play_pong.Service.Repositories;
+using ping_Map_Play_pong.Service;
 
 namespace ping_Map_Play_pong.Controllers;
 
@@ -13,14 +12,12 @@ namespace ping_Map_Play_pong.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
-    private readonly IUserRepository _userRepository;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserService _userService;
 
-    public UserController(ILogger<UserController> logger, IUserRepository userRepository, UserManager<IdentityUser> userManager)
+    public UserController(ILogger<UserController> logger, IUserService userService)
     {
         _logger = logger;
-        _userRepository = userRepository;
-        _userManager = userManager;
+        _userService = userService;
     }
 
     [HttpGet(Name = "users"),]
@@ -28,7 +25,8 @@ public class UserController : ControllerBase
     {
         try
         {
-            var users = _userRepository.GetAll();
+            var users = _userService.GetAll();
+            
             var respUsers = users.Select(user => new UserResponse
             {
                 Id = user.Id,
@@ -42,7 +40,7 @@ public class UserController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound("users table is empty");
+            return BadRequest("something went wrong");
         }
     }
     
@@ -51,60 +49,51 @@ public class UserController : ControllerBase
     {
         try
         {
-            return Ok(_userRepository.GetById(userId));
+            return Ok(_userService.GetById(userId));
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return NotFound($"user with id:{userId} not exist in DB");
+            return BadRequest("something went wrong");
         }
     }
 
     [HttpPatch("update/{userId}")]
-    public ActionResult<string> Update(int userId)
+    public ActionResult<string> Update(int userId, [FromBody] UserRequest request)
     {
         try
         {
-            var user = _userRepository.GetById(userId);
-            
-            _userRepository.Update(user);
-            return Ok("successful update");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return NotFound($"user with id:{userId} not exist in DB");
-        }
-    }
-
-    [HttpDelete("delete/{userId}")]
-    public async Task<IActionResult> Delete(int userId)
-    {
-        try
-        {
-            var user = _userRepository.GetById(userId);
+            var user = _userService.GetById(userId);
             
             if (user == null)
             {
                 return NotFound($"User with ID:{userId} not found in database");
             }
+            
+            // TODO
+            // _userService.Update(request);
+            return Ok("successful update");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return BadRequest("something went wrong");
+        }
+    }
 
-            var identityUser = await _userManager.FindByEmailAsync(user.IdentityUserEmail);
-     
-            if (identityUser != null)
+    [HttpDelete("delete/{userId}")]
+    public IActionResult Delete(int userId)
+    {
+        try
+        {
+            var user = _userService.GetById(userId);
+            
+            if (user == null)
             {
-                var result = await _userManager.DeleteAsync(identityUser);
-          
-                if (!result.Succeeded)
-                {
-                    _logger.LogError("Failed to delete identity user: " + result.Errors.FirstOrDefault()?.Description);
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to delete identity user");
-                }
+                return NotFound($"User with ID:{userId} not found in database");
             }
-            else
-            {
-                _logger.LogWarning($"Identity user not found for user ID: {userId}");
-            }
+            
+            _userService.Delete(user);
 
             return Ok("User successfully deleted");
         }
