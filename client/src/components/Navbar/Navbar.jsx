@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import {useProfile} from "../../contexts/ProfileContext.jsx";
 
-
 export default function Navbar() {
     const {logout, profile} = useProfile();
     const [isActive, setIsActive] = useState(false);

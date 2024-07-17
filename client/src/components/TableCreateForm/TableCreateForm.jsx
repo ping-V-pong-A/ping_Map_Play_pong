@@ -1,11 +1,6 @@
 import React, {useState} from "react";
 
-export default function TableCreateForm(props) {
-    const {
-        onSave,
-        onCancel
-    } = props;
-
+export default function TableCreateForm({onSave, onCancel}) {
     const [name, setName] = useState("");
     const [lat, setLat] = useState(0);
     const [lon, setLon] = useState(0);

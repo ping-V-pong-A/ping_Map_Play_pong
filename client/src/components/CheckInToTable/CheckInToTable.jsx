@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function CheckInToTable({checkIn, setCheckIn, handleCheckIn, checkSwitch, setCheckSwitch}) {
-
     const onSubmit = e => {
         e.preventDefault();
         console.log(checkIn)
