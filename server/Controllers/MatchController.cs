@@ -83,7 +83,7 @@ public class MatchController : ControllerBase
         {
             var res = _matchRepository.GetByUserId(userId).ToList();
             
-            if (res.Count == 0) return NotFound($"match with userId:{userId} not exist in DB");
+            // if (res.Count == 0) return NotFound($"match with userId:{userId} not exist in DB");
             
             return Ok(res);
         }

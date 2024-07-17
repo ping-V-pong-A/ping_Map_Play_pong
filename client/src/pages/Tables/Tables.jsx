@@ -18,7 +18,7 @@ const postCheckIn = (checkIn) => fetch('/api/CheckingIn/checkingIns/add', {
     credentials: 'include',
     body: JSON.stringify(checkIn)
 })
-    .then((res) => res.json())
+    .then((resp) => resp.json())
     .catch((error) => console.error('Error:', error))
 
 export default function Tables() {
@@ -28,6 +28,13 @@ export default function Tables() {
     const [loading, setLoading] = useState(true)
     const [tables, setTables] = useState(null)
     const [listMapSwitch, setListMapSwitch] = useState(true)
+
+    const [checkIn, setCheckIn] = useState({
+        userId: profile ? profile.id : 1,
+        tableId: 0,
+        start: "",
+        end: ""
+    })
 
     useEffect(() => {
         fetchAllTable()
@@ -44,9 +51,11 @@ export default function Tables() {
    const handleCheckIn = (checkIn) => postCheckIn(checkIn).then(navigate("/tables"))
 
     const props = {
-        tables: tables,
-        profile: profile,
-        handleCheckIn: handleCheckIn
+        tables,
+        profile,
+        checkIn,
+        setCheckIn,
+        handleCheckIn
     }
 
     return (

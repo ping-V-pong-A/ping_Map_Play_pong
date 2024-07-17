@@ -17,6 +17,7 @@ export const ProfileContextProvider = ({ children }) => {
 
     }
     const logout = () => {
+        setProfile(null);
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('logoutTime' );
     };

@@ -2,6 +2,7 @@ import "leaflet/dist/leaflet.css";
 import React, {useState} from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import {Link} from "react-router-dom";
+import CheckInToTable from "../CheckInToTable/CheckInToTable.jsx";
 
 function UserLocationMarker() {
     const [position, setPosition] = useState(null)
@@ -22,21 +23,14 @@ function UserLocationMarker() {
     )
 }
 
-export default function Map({tables, profile, handleCheckIn}) {
+export default function Map({tables, profile, checkIn, setCheckIn, handleCheckIn}) {
     const [position, setPosition] = useState(null);
-    const [checkSwitch, setCheckSwitch] = useState(false)
+    const [checkSwitch, setCheckSwitch] = useState(false);
     
-    const [checkIn, setCheckIn] = useState({
-        userId: profile ? profile.id : 1,
-        tableId: 0,
-        start: "",
-        end: ""
-    })
-    
-    const onSubmit = e => {
-        e.preventDefault();
-        console.log(checkIn)
-        return handleCheckIn(checkIn)
+    const props = {
+        checkIn,
+        setCheckIn,
+        handleCheckIn
     }
     
     return (
@@ -53,33 +47,12 @@ export default function Map({tables, profile, handleCheckIn}) {
                                 setCheckSwitch(!checkSwitch)}}
                             >
                                 {checkSwitch ? "Cancel" : "Check-In" }                               
-                            </button>                            
-                            {checkSwitch &&
-                                <form onSubmit={onSubmit}>
-                                    <div>
-                                        <label htmlFor="start">Start:</label>
-                                        <input
-                                            value={checkIn.start} onChange={e => setCheckIn({...checkIn, start: e.target.value})}
-                                            type="datetime-local"
-                                            name="start"
-                                            id="strat"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="end">End:</label>
-                                        <input
-                                            value={checkIn.end} onChange={e => setCheckIn({...checkIn, end: e.target.value})}
-                                            type="datetime-local"
-                                            name="end"
-                                            id="end"
-                                        />
-                                    </div>
-                                    <button type="submit">Submit</button>
-                                </form>}
+                            </button>
+                            {checkSwitch && <CheckInToTable{...props}/>}
                         </Popup>
                     </Marker>
                 ))}
-                <UserLocationMarker />
+                <UserLocationMarker/>
             </MapContainer>
 
     );
