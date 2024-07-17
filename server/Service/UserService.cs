@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using ping_Map_Play_pong.Model;
+using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Service;
@@ -21,16 +22,17 @@ public class UserService : IUserService
 
     public User GetById(int userId) => _userRepository.GetById(userId);
 
-    public void Update()
+    public void Update(UserRequest request)
     {
+        // TODO
         throw new NotImplementedException();
     }
 
-    public void Delete(IdentityUser user)
+    public async void Delete(User user)
     {
-
+        var identityUser = await _userManager.FindByEmailAsync(user.IdentityUserEmail);
         
-        _userManager.DeleteAsync(user);
+        await _userManager.DeleteAsync(identityUser);
     }
 
 }

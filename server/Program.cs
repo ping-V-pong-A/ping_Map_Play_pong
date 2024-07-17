@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using ping_Map_Play_pong.Data;
 using ping_Map_Play_pong.Service;
 using ping_Map_Play_pong.Service.Authentication;
-using ping_Map_Play_pong.Service.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +20,7 @@ builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IPairMatchService, PairMatchService>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticationSeeder>();
@@ -30,9 +29,6 @@ var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 var validIssuer = jwtSettingsSection["ValidIssuer"];
 var validAudience = jwtSettingsSection["ValidAudience"];
 var issuerSigningKey = builder.Configuration["JwtSettings:IssuerSigningKey"];
-
-
-
 
 builder.Services
     .AddIdentityCore<IdentityUser>(options =>
