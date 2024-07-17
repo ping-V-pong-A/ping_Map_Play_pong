@@ -11,7 +11,7 @@ const getUser = () => fetch('/api/users')
         console.error('Error fetching users:', error);
     });
 
-const deleteUser = (userId) => fetch(`/api/users/${userId}`, {
+const deleteUser = (userId) => fetch(`/api/users/delete/${userId}`, {
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json',

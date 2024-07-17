@@ -24,7 +24,7 @@ const AdminTableEditor = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        fetch(`/api/tables/${table.id}`, {
+        fetch(`/api/tables/update/${table.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
