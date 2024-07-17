@@ -23,12 +23,6 @@ public class PingMapPlayPongContext : IdentityDbContext<IdentityUser, IdentityRo
         _configuration = configuration;
       
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
-    {
-        optionBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL_CONNECTION"));
-    }
-    
     
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
