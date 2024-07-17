@@ -12,6 +12,7 @@ import NewTableForm  from "./pages/AddTable/AddTable.jsx";
 import Home from './pages/Home/Home.jsx';
 import SignIn from "./pages/SignIn/SignIn.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
+import AdminPage from "./pages/AdminPage/AdminPage.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -24,7 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                        
                         <Route path='/sign-in' element={<SignIn/>}/>
                         <Route path='/sign-up' element={<SignUp/>}/>
-                        
+                        <Route path='/admin' element={<AdminPage/>}/>
                         <Route element={<ProtectedRoutes/>}>
                             <Route path='/tables' element={<Tables/>}/>
                             <Route path='/tables/new' element={<NewTableForm/>}/>
