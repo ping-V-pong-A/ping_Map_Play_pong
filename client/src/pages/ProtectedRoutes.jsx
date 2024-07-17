@@ -3,7 +3,7 @@ import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext.jsx';
 
 export default function ProtectedRoutes() {
-    const { login, logout } = useProfile();
+    const { login, logout, profile } = useProfile();
     const navigate = useNavigate();
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const logoutTime = localStorage.getItem('logoutTime');
@@ -11,7 +11,7 @@ export default function ProtectedRoutes() {
     useEffect(() => {
         const checkLoginStatus = () => {
             const currentTime = new Date().getTime();
-            if (!isLoggedIn || (logoutTime && currentTime > parseInt(logoutTime))) {
+            if (!profile || !isLoggedIn || (logoutTime && currentTime > parseInt(logoutTime))) {
                 logout();
                 navigate('/sign-in');
             }

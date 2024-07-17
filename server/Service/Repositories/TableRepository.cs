@@ -28,13 +28,22 @@ public class TableRepository : ITableRepository
 
     public Table GetByTableName(string tableName)
     {
-        return _dbContext.Tables.FirstOrDefault(t => t.Name == tableName);
+        return _dbContext.Tables
+            .Include(table => table.CheckingIns)
+            .ToList()
+            .FirstOrDefault(t => t.Name == tableName);
     }
 
 
     public Table GetByTableId(int tableId)
     {
-        return _dbContext.Tables.FirstOrDefault(t => t.Id == tableId);
+        return _dbContext.Tables
+            .Include(table => table.Coordinate)
+            .Include(table => table.CheckingIns)
+            .Include(table => table.LeaderBoard)
+            .Include(table => table.PairMatchesLeaderBoard)
+            .ToList()
+            .FirstOrDefault(t => t.Id == tableId);
     }
 
 

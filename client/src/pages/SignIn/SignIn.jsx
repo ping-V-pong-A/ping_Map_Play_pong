@@ -4,40 +4,34 @@ import { useProfile } from '../../contexts/ProfileContext';
 import SignInForm from '../../components/SignInForm/SignInForm.jsx';
 
 const postSignIn = (user) => fetch('/api/Auth/Login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(user)
-}).then(res => {
-    if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
-}).catch(err => {
-    console.error('Error:', err);
-});
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(user)})
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();})
+    .catch(err => {
+        console.error('Error:', err);
+    });
 
-const getUserByUserName = (userName) => fetch(`/api/User/users/name/${userName}`)
-    .then(resp => resp.json())
 
 export default function SignIn() {
     const navigate = useNavigate();
-    const {setProfile, login } = useProfile();
+    const { setProfile, login } = useProfile();
 
-    const handleSignIn = (user) => {
-        postSignIn(user)
+    const handleSignIn = (user) => postSignIn(user)
             .then(data => {
                 login();
+                setProfile(data)
                 navigate('/tables');
                 return data;
-            })
-            .then(data =>{
-                getUserByUserName(data.userName).then(data => setProfile(data))
             })
             .catch(err => {
                 console.error(err);
             });
-    };
 
     const props = {
         onSave: handleSignIn,
