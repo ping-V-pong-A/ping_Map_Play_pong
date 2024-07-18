@@ -23,8 +23,8 @@ const AdminTablesList = (props) => {
 
     const goBackHandler = () =>  props.onSaveData();
 
-    const saveDataHandler = () => setEditing(false);   
- 
+    const saveDataHandler = () => setEditing(false);
+
     const tableEditorHandler = (tableId) => {
         const tableToEdit = allTables.find(table => table.id === tableId);
         setEditTable(tableToEdit);
@@ -41,7 +41,7 @@ const AdminTablesList = (props) => {
                 <>
                     <h1>Tables</h1>
                     {allTables && allTables.length > 0 ? (
-                        <table>
+                        <table className={"tableList"}>
                             <thead>
                             <tr>
                                 <th>Name</th>
