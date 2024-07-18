@@ -1,0 +1,40 @@
+﻿version: '3'
+
+networks:
+  ping-map_play-pong:
+
+services:
+  db-ping-map_play-pong-app:
+    container_name: db-ping-map_play-pong-app
+    image: mcr.microsoft.com/mssql/server:latest
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "MyPassword!"
+    networks:
+      - ping-map_play-pong
+  
+  api-ping-map_play-pong-app:
+    container_name: api-ping-map_play-pong-app
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db-ping-map_play-pong-app
+    environment:
+      - ConnectionStrings__MSSQL_CONNECTION=Server=db-ping-map_play-pong-app;Database=db_PingMapPlayPong;User Id=sa;Password=MyPassword!;Encrypt=false;
+    networks:
+      - ping-map_play-pong
+        
+  client-ping-map_play-pong-app:
+    container_name: client-ping-map_play-pong-app
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - ping-map_play-pong
