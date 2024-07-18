@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.DataModels;
 namespace ping_Map_Play_pong.Data;
@@ -21,7 +23,12 @@ public class PingMapPlayPongContext : IdentityDbContext<IdentityUser, IdentityRo
     public PingMapPlayPongContext(DbContextOptions<PingMapPlayPongContext> options,IConfiguration configuration)  : base(options)
     {
         _configuration = configuration;
-      
+
+        if (Database.GetService<IDatabaseCreator>() is RelationalDatabaseCreator databaseCreator)
+        {
+            if (!databaseCreator.CanConnect()) databaseCreator.Create();
+            if (!databaseCreator.HasTables()) databaseCreator.CreateTables();
+        }
     }
     
     
