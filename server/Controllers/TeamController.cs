@@ -64,7 +64,7 @@ public class TeamController : ControllerBase
     {
         try
         {
-            if (_teamService.GetByPlayersId(player1Id, player2Id) == null)
+            if (_teamService.GetByPlayersId(player1Id, player2Id) != null)
             {
                 _logger.LogInformation("This team already exist");
                 return BadRequest("This team already exist");
