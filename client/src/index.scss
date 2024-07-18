@@ -1,7 +1,16 @@
+$primary-color: #333;
+$secondary-color: #fff;
+$brand-font-size: 1.5rem;
+$link-font-size: 1rem;
+$navbar-width: 100%;
+$navbar-height: 60px;
+$breakpoint: 768px;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  overflow:hidden;
 
   color-scheme: light dark;
   color: forestgreen;
@@ -12,6 +21,84 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+button {
+  border-radius: 10px;
+  font-size: 1.2em;
+}
+
+.buttons {
+  margin-left: 15em;
+  margin-top: 2em;
+}
+
+.welcomeDiv {
+  margin: 2em auto;
+  max-width: 800px;
+  padding: 1em;
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.welcomeDiv p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+form{
+  margin-top: 2em;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $primary-color;
+  padding: 0 1rem;
+  height: $navbar-height;
+  color: $secondary-color;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+}
+
+
+.navbar li{
+  border:none;
+}
+
+.navbar ul{
+  margin-right:5em;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column; /* Ez gondoskodik a teljes layout kitöltése */
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+}
+
+table {
+  max-width: 50%;
+  margin: 5em auto;
+}
+
 
 a {
   font-weight: 500;
@@ -25,7 +112,6 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  //place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
