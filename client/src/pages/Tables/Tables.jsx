@@ -22,7 +22,7 @@ const postCheckIn = (checkIn) => fetch('/api/check-ins/add', {
     .catch((error) => console.error('Error:', error))
 
 export default function Tables() {
-    
+
     const navigate = useNavigate()
     const {profile} = useProfile();
     const [loading, setLoading] = useState(true)
@@ -47,8 +47,8 @@ export default function Tables() {
     const addNewTableHandler = () =>{
         navigate('/tables/new')
     }
-    
-   const handleCheckIn = (checkIn) => postCheckIn(checkIn).then(navigate("/tables"))
+
+    const handleCheckIn = (checkIn) => postCheckIn(checkIn).then(navigate("/tables"))
 
     const props = {
         tables,
@@ -63,12 +63,15 @@ export default function Tables() {
             <Loading/>
         ) : (
             <>
-                <button onClick={_ => setListMapSwitch(!listMapSwitch)}>{listMapSwitch ? "Map" : "List"}</button>
-                <button onClick={addNewTableHandler}>Add new table</button>
+                <div className={"buttons"}>
+                    <button onClick={_ => setListMapSwitch(!listMapSwitch)}>{listMapSwitch ? "Map" : "List"}</button>
+                    <button onClick={addNewTableHandler}>Add new table</button>
+                </div>
+
                 {listMapSwitch ?
-                <TableList {...props}/>                    
-                :
-                <Map {...props}/>                }
+                    <TableList {...props}/>
+                    :
+                    <Map {...props}/>}
             </>
         )
     );
