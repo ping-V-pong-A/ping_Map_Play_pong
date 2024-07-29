@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service;
 
@@ -26,10 +27,10 @@ public class CheckingInController : ControllerBase
         {
             return Ok(_checkingInService.GetAll());
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse(e.Message);
         }
     }
     
@@ -40,10 +41,10 @@ public class CheckingInController : ControllerBase
         {
             return Ok( _checkingInService.GetByUserId(userId));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse(e.Message);
         }
     }
     
@@ -56,30 +57,26 @@ public class CheckingInController : ControllerBase
             
             return Ok("success added new checkingIn");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse(e.Message);
         }
     }
 
     [HttpPatch("update/{checkingInId}")]
-    public ActionResult<string> Update(int checkingInId)
+    public ActionResult<string> Update(int checkingInId, [FromBody] CheckInRequest request)
     {
         try
         {
-            var checkingIn = _checkingInService.GetById(checkingInId);
-            
-            if (checkingIn == null) return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
-            
-            _checkingInService.Update(checkingIn);
+            _checkingInService.Update(checkingInId, request);
             
             return Ok("successful update");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse(e.Message);
         }
     }
 
@@ -88,17 +85,13 @@ public class CheckingInController : ControllerBase
     {
         try
         {
-            var checkingIn = _checkingInService.GetById(checkingInId);
-            
-            if (checkingIn == null) return NotFound($"checkingIn with id:{checkingInId} not exist in DB");
-            
-            _checkingInService.DeleteFromDb(checkingIn);
+            _checkingInService.DeleteFromDb(checkingInId);
             return Ok("successful delete");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse(e.Message);
         }
     }
 }
