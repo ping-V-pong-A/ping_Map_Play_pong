@@ -2,9 +2,12 @@ namespace ping_Map_Play_pong.Model.RequestModels;
 
 public class MatchRequest
 {
-   public int TableId { get; set; }
-   public int Player1Id { get; set; }
-   public int Player2Id { get; set; }
-   public DateTime StartTime { get; set; }
-   public DateTime EndTime { get; set; }
+   public int Id { get; init; }
+   public int TableId { get; init; }
+   public DateTime StartDate { get; init; }
+   public DateTime EndDate { get; init; }
+   public int Player1Id { get; init; }
+   public int Player1Point { get; init; }
+   public int Player2Id { get; init; }
+   public int Player2Point { get; init; }
 }
