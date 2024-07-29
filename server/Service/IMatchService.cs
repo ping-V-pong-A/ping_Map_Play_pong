@@ -11,6 +11,6 @@ public interface IMatchService
     IEnumerable<Match> GetByPlayersId(int player1Id, int player2Id);
     IEnumerable<Match> GetByDate(DateTime date);
     void PostToDb(MatchRequest request);
-    void Update(Match match);
-    void DeleteFromDb(Match match);
+    void Update(int matchId, MatchRequest request);
+    void DeleteFromDb(int matchId);
 }

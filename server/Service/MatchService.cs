@@ -1,4 +1,5 @@
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service.Repositories;
 
@@ -10,13 +11,15 @@ public class MatchService : IMatchService
     private readonly IMatchRepository _matchRepository;
     private readonly IUserRepository _userRepository;
     private readonly ITableRepository _tableRepository;
+    private readonly IServiceMethods _serviceMethods;
 
-    public MatchService(ILogger<MatchService> logger, IMatchRepository matchRepository, IUserRepository userRepository, ITableRepository tableRepository)
+    public MatchService(ILogger<MatchService> logger, IMatchRepository matchRepository, IUserRepository userRepository, ITableRepository tableRepository, IServiceMethods serviceMethods)
     {
         _logger = logger;
         _matchRepository = matchRepository;
         _userRepository = userRepository;
         _tableRepository = tableRepository;
+        _serviceMethods = serviceMethods;
     }
 
     public IEnumerable<Match> GetAll() => _matchRepository.GetAll();
@@ -40,15 +43,52 @@ public class MatchService : IMatchService
         {
             TableId = table.Id,
             Player1 = player1,
+            Player1Point = request.Player1Point,
             Player2 = player2,
-            StartDate = request.StartTime,
-            EndDate = request.EndTime
+            Player2Point = request.Player2Point,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate
         };
         
         _matchRepository.Add(newMatch);
     }
 
-    public void Update(Match match) => _matchRepository.Update(match);
+    public void Update(int matchId, MatchRequest request)
+    {
+        var match = _matchRepository.GetById(matchId);
 
-    public void DeleteFromDb(Match match) => _matchRepository.Delete(match);
+        if (match == null)
+        {
+            throw new NotFoundException("404");
+        }
+        
+        var table = _tableRepository.GetByTableId(request.TableId);
+        var player1 = _userRepository.GetById(request.Player1Id);
+        var player2 = _userRepository.GetById(request.Player2Id);
+
+        match.TableId = table.Id;
+        match.Player1 = player1;
+        match.Player1Point = request.Player1Point;
+        match.Player2 = player2;
+        match.Player2Point = request.Player2Point;
+        match.StartDate = request.StartDate;
+        match.EndDate = request.EndDate;
+        
+        _serviceMethods.UpdateProperties(request, match);
+        
+        _matchRepository.Update(match);
+    }
+
+    public void DeleteFromDb(int matchId)
+    {
+        var match = _matchRepository.GetById(matchId);
+
+        if (match == null)
+        {
+            throw new NotFoundException("404");
+        }
+        
+        _matchRepository.Delete(match);
+    }
+
 }
