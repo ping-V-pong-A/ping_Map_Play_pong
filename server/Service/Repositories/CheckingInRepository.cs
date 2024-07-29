@@ -33,9 +33,9 @@ public class CheckingInRepository : ICheckingInRepository
         _dbContext.SaveChanges();
     }
 
-    public void Delete(CheckingIn checkingInId)
+    public void Delete(CheckingIn checkingIn)
     {
-        _dbContext.Remove(checkingInId);
+        _dbContext.Remove(checkingIn);
         _dbContext.SaveChanges();
     }
 
