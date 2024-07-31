@@ -6,6 +6,9 @@ namespace ping_Map_Play_pong.Model.RequestModels;
 
 public class UserRequest
 {
+    
+    public string UserName { get; set; }
+    
     public ICollection<Table> CheckedInTables { get; set; }
 
     public string IdentityUserEmail { get; set; }
