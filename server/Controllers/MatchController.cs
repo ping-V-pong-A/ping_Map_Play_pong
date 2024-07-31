@@ -38,10 +38,6 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var res = _matchService.GetById(matchId);
-            
-            if (res == null) return NotFound($"match with id:{matchId} not exist in DB");
-            
             return Ok(_matchService.GetById(matchId));
         }
         catch (ExceptionBase e)
