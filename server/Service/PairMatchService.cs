@@ -10,14 +10,12 @@ public class PairMatchService : IPairMatchService
     private readonly ILogger<PairMatchService> _logger;
     private readonly IPairMatchRepository _pairPairMatchRepository;
     private readonly IUserRepository _userRepository;
-    private readonly ITableRepository _tableRepository;
 
-    public PairMatchService(ILogger<PairMatchService> logger, IPairMatchRepository pairPairMatchRepository, IUserRepository userRepository, ITableRepository tableRepository)
+    public PairMatchService(ILogger<PairMatchService> logger, IPairMatchRepository pairPairMatchRepository, IUserRepository userRepository)
     {
         _logger = logger;
         _pairPairMatchRepository = pairPairMatchRepository;
         _userRepository = userRepository;
-        _tableRepository = tableRepository;
     }
 
     public IEnumerable<PairMatch> GetAll()
@@ -67,6 +65,11 @@ public class PairMatchService : IPairMatchService
     {
         _logger.LogInformation($"Updating match with ID {pairMatchId}.");
         var pairMatch = _pairPairMatchRepository.GetById(pairMatchId);
+        
+        if (pairMatch == null)
+        {
+            throw new NotFoundException($"match with id:{pairMatchId} not exist in DB");
+        }
             
         var team1 = new Team
         {
