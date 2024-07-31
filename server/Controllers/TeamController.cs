@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Service;
 
 namespace ping_Map_Play_pong.Controllers;
@@ -24,10 +25,10 @@ public class TeamController : ControllerBase
         {
             return Ok(_teamService.GetAll());
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound("teams table is empty");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -38,10 +39,10 @@ public class TeamController : ControllerBase
         {
             return Ok(_teamService.GetByUserId(userId));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound($"team with id:{userId} not exist in DB");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -52,10 +53,10 @@ public class TeamController : ControllerBase
         {
             return Ok(_teamService.GetByPlayersId(player1Id, player2Id));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound($"team with players:{player1Id} and {player2Id} not exist in DB");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -64,20 +65,13 @@ public class TeamController : ControllerBase
     {
         try
         {
-            if (_teamService.GetByPlayersId(player1Id, player2Id) != null)
-            {
-                _logger.LogInformation("This team already exist");
-                return BadRequest("This team already exist");
-            }
-            
             _teamService.PostToDb(player1Id, player2Id);
-            
             return Ok("success added new team");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("un success added new team");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -89,10 +83,10 @@ public class TeamController : ControllerBase
             _teamService.DeleteFromDb(teamId);
             return Ok("successful delete");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound($"team with id:{teamId} not exist in DB");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 }
