@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Contracts;
+using ping_Map_Play_pong.Model.ResponseModels;
+using ping_Map_Play_pong.Service;
 using ping_Map_Play_pong.Service.Authentication;
-using ping_Map_Play_pong.Service.Repositories;
 
 namespace ping_Map_Play_pong.Controllers;
 
@@ -10,14 +11,14 @@ namespace ping_Map_Play_pong.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authenticationService;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
     private readonly IConfiguration _configuration;
 
-    public AuthController(IAuthService authenticationService, IConfiguration configuration, IUserRepository userRepository)
+    public AuthController(IAuthService authenticationService, IConfiguration configuration, IUserService userService)
     {
         _authenticationService = authenticationService;
         _configuration = configuration;
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     [HttpPost("sign-up")]
@@ -40,7 +41,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("sign-in")]
-    public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
+    public async Task<ActionResult<UserResponse>> Authenticate([FromBody] AuthRequest request)
     {
         Console.WriteLine($"Received AuthRequest: Email={request.Email}, Password={request.Password}");
         if (!ModelState.IsValid)
@@ -56,11 +57,11 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var user = _userRepository.GetByEmail(result.Email);
+        var userResp = _userService.GetByEmail(result.Email);
         
         HttpContext.Response.Cookies.Append("access_token", result.Token, new CookieOptions { HttpOnly = true, Expires = DateTime.Now.AddMinutes(30)});
       
-        return Ok(user);
+        return Ok(userResp);
     }
     
     [HttpPost("sign-out")]
