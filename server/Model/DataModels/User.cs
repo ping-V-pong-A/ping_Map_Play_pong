@@ -22,5 +22,5 @@ public class User
 
     // Navigation property to IdentityUser
     public IdentityUser IdentityUser { get; set; }
-    public Rank Rank { get; init; }
+    public Rank Rank { get; set; }
 }
