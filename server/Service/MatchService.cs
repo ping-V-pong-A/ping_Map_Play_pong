@@ -64,13 +64,12 @@ public class MatchService : IMatchService
     public void PostToDb(MatchRequest request)
     {
         _logger.LogInformation("Adding new match to the database.");
-        var table = _tableRepository.GetByTableId(request.TableId);
         var player1 = _userRepository.GetById(request.Player1Id);
         var player2 = _userRepository.GetById(request.Player2Id);
             
         var newMatch = new Match
         {
-            TableId = table.Id,
+            TableId = request.TableId,
             Player1 = player1,
             Player1Point = request.Player1Point,
             Player2 = player2,
@@ -95,11 +94,10 @@ public class MatchService : IMatchService
             throw new NotFoundException("404");
         }
         
-        var table = _tableRepository.GetByTableId(request.TableId);
         var player1 = _userRepository.GetById(request.Player1Id);
         var player2 = _userRepository.GetById(request.Player2Id);
 
-        match.TableId = table.Id;
+        match.TableId = request.TableId;
         match.Player1 = player1;
         match.Player1Point = request.Player1Point;
         match.Player2 = player2;

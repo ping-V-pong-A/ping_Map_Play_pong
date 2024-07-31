@@ -37,8 +37,6 @@ public class PairMatchService : IPairMatchService
 
     public void PostToDb(PairMatchRequest request)
     {
-        var table = _tableRepository.GetByTableId(request.TableId);
-            
         var team1 = new Team
         {
             Player1 = _userRepository.GetById(request.Team1Player1Id),
@@ -53,7 +51,7 @@ public class PairMatchService : IPairMatchService
             
         var newPairMatch = new PairMatch
         {
-            TableId = table.Id,
+            TableId = request.TableId,
             StartDate = request.StartDate,
             EndDate = request.EndDate,
             Team1 = team1,
@@ -69,8 +67,6 @@ public class PairMatchService : IPairMatchService
     {
         _logger.LogInformation($"Updating match with ID {pairMatchId}.");
         var pairMatch = _pairPairMatchRepository.GetById(pairMatchId);
-        
-        var table = _tableRepository.GetByTableId(request.TableId);
             
         var team1 = new Team
         {
@@ -84,7 +80,7 @@ public class PairMatchService : IPairMatchService
             Player2 = _userRepository.GetById(request.Team2Player1Id)
         };
         
-        pairMatch.TableId = table.Id;
+        pairMatch.TableId = request.TableId;
         pairMatch.Team1 = team1;
         pairMatch.Team1Point = request.Team1Point;
         pairMatch.Team2 = team2;
