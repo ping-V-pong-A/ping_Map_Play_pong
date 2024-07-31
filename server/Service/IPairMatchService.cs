@@ -9,6 +9,6 @@ public interface IPairMatchService
     PairMatch GetById(int pairMatchId);
     IEnumerable<PairMatch> GetByDate(DateTime date);
     void PostToDb(PairMatchRequest request);
-    void Update(PairMatch pairMatch);
-    void DeleteFromDb(PairMatch pairMatch);
+    void Update(int pairMatchId, PairMatchRequest request);
+    void DeleteFromDb(int pairMatchId);
 }
