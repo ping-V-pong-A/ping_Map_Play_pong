@@ -10,15 +10,13 @@ public class MatchService : IMatchService
     private readonly ILogger<MatchService> _logger;
     private readonly IMatchRepository _matchRepository;
     private readonly IUserRepository _userRepository;
-    private readonly ITableRepository _tableRepository;
     private readonly IServiceMethods _serviceMethods;
 
-    public MatchService(ILogger<MatchService> logger, IMatchRepository matchRepository, IUserRepository userRepository, ITableRepository tableRepository, IServiceMethods serviceMethods)
+    public MatchService(ILogger<MatchService> logger, IMatchRepository matchRepository, IUserRepository userRepository, IServiceMethods serviceMethods)
     {
         _logger = logger;
         _matchRepository = matchRepository;
         _userRepository = userRepository;
-        _tableRepository = tableRepository;
         _serviceMethods = serviceMethods;
     }
 
