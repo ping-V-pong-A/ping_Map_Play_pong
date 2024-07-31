@@ -59,7 +59,7 @@ public class CheckingInService : ICheckingInService
         _logger.LogInformation($"Adding new CheckingIn. UserId: {request.UserId}, TableId: {request.TableId}, StartDate: {request.StartDate}, EndDate: {request.EndDate}.");
 
         var user = _userRepository.GetById(request.UserId);
-        var table = _tableRepository.GetByTableId(request.TableId);
+        var table = _tableRepository.GetById(request.TableId);
         
         if (user == null || table == null)
         {

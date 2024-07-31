@@ -25,7 +25,7 @@ public class TableRepository : ITableRepository
         return tables;
     }
 
-    public Table GetByTableId(int tableId)
+    public Table GetById(int tableId)
     {
         return _dbContext.Tables
             .Include(table => table.Coordinate)
