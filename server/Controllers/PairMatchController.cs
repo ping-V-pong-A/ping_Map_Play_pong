@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service;
 namespace ping_Map_Play_pong.Controllers;
@@ -25,10 +26,10 @@ public class PairMatchController : ControllerBase
         {
             return Ok(_pairMatchService.GetAll());
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound("pairPairMatches table is empty");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -39,10 +40,10 @@ public class PairMatchController : ControllerBase
         {
             return Ok(_pairMatchService.GetByDate(date));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound($"pairPairMatch with date:{date} not exist in DB");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -53,10 +54,10 @@ public class PairMatchController : ControllerBase
         {
             return Ok(_pairMatchService.GetById(pairMatchId));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return NotFound($"pairPairMatch with id:{pairMatchId} not exist in DB");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -66,32 +67,27 @@ public class PairMatchController : ControllerBase
         try
         {
             _pairMatchService.PostToDb(request);
-            
             return Ok("success added new pairPairMatch");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("un success added new pairPairMatch");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
     [HttpPatch("update/{pairMatchId}")]
-    public ActionResult<string> Update(int pairMatchId)
+    public ActionResult<string> Update(int pairMatchId, [FromBody] PairMatchRequest request)
     {
         try
-        {
-            var pairMatch = _pairMatchService.GetById(pairMatchId);
-            
-            if (pairMatch == null) return NotFound($"match with id:{pairMatchId} not exist in DB");
-            
-            _pairMatchService.Update(pairMatch);
+        { 
+            _pairMatchService.Update(pairMatchId, request);
             return Ok("successful update");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -100,17 +96,13 @@ public class PairMatchController : ControllerBase
     {
         try
         {
-            var pairMatch = _pairMatchService.GetById(pairMatchId);
-            
-            if (pairMatch == null) return NotFound($"match with id:{pairMatchId} not exist in DB");
-            
-            _pairMatchService.DeleteFromDb(pairMatch);
+            _pairMatchService.DeleteFromDb(pairMatchId);
             return Ok("successful delete");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 }

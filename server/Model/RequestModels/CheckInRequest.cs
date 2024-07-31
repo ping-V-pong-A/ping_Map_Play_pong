@@ -4,6 +4,6 @@ public class CheckInRequest
 {
     public int UserId { get; set; }
     public int TableId { get; set; }
-    public DateTime Start { get; set; }
-    public DateTime End { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }

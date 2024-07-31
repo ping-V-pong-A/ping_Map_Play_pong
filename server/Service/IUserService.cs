@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Identity;
-using ping_Map_Play_pong.Model;
 using ping_Map_Play_pong.Model.RequestModels;
+using ping_Map_Play_pong.Model.ResponseModels;
 
 namespace ping_Map_Play_pong.Service;
 
 public interface IUserService
 {
-    IEnumerable<User> GetAll();
-    User GetById(int userId);
-    void Update(UserRequest request);
-    void Delete(User user);
+    IEnumerable<UserResponse> GetAll();
+    UserResponse GetById(int userId);
+    UserResponse GetByEmail(string userEmail);
+    void Update(int userId, UserRequest request);
+    void Delete(int userId);
 }

@@ -9,6 +9,6 @@ public interface ICheckingInService
     CheckingIn GetById(int checkingInId);
     IEnumerable<CheckingIn> GetByUserId(int userId);
     void PostToDb(CheckInRequest request);
-    void Update(CheckingIn checkingIn);
-    void DeleteFromDb(CheckingIn checkingIn);
+    void Update(int checkingInId, CheckInRequest request);
+    void DeleteFromDb(int checkingInId);
 }

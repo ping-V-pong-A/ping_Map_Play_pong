@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ping_Map_Play_pong.Model.DataModels;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service;
 namespace ping_Map_Play_pong.Controllers;
@@ -23,16 +24,12 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var res = _matchService.GetAll().ToList();
-            
-            if (res.Count == 0) return NotFound("matches table is empty");
-            
-            return Ok(res);
+            return Ok(_matchService.GetAll());
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -41,16 +38,12 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var res = _matchService.GetById(matchId);
-            
-            if (res == null) return NotFound($"match with id:{matchId} not exist in DB");
-            
-            return Ok(res);
+            return Ok(_matchService.GetById(matchId));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -61,10 +54,10 @@ public class MatchController : ControllerBase
         {
             return Ok(_matchService.GetByUserId(userId));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -75,10 +68,10 @@ public class MatchController : ControllerBase
         {
             return Ok(_matchService.GetByPlayersId(player1Id, player2Id));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -89,10 +82,10 @@ public class MatchController : ControllerBase
         {
            return Ok(_matchService.GetByDate(date));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
@@ -105,29 +98,25 @@ public class MatchController : ControllerBase
             _logger.LogInformation("success added new match");
             return Ok("success added new match");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
     [HttpPatch("update/{matchId}")]
-    public ActionResult<string> Update(int matchId)
+    public ActionResult<string> Update(int matchId, [FromBody] MatchRequest request)
     {
         try
         {
-            var match = _matchService.GetById(matchId);
-            
-            if (match == null) return NotFound($"match with id:{matchId} not exist in DB");
-            
-            _matchService.Update(match);
+            _matchService.Update(matchId, request);
             return Ok("successful update");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -136,17 +125,13 @@ public class MatchController : ControllerBase
     {
         try
         {
-            var match = _matchService.GetById(matchId);
-            
-            if (match == null) return NotFound($"match with id:{matchId} not exist in DB");
-            
-            _matchService.DeleteFromDb(match);
+            _matchService.DeleteFromDb(matchId);
             return Ok("successful delete");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 }

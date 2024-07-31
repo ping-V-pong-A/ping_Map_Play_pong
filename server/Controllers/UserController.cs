@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ping_Map_Play_pong.Model;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Model.ResponseModels;
 using ping_Map_Play_pong.Service;
@@ -21,40 +21,30 @@ public class UserController : ControllerBase
     }
 
     [HttpGet(Name = "users"),]
-    public ActionResult<IEnumerable<User>> GetAll()
+    public ActionResult<IEnumerable<UserResponse>> GetAll()
     {
         try
         {
-            var users = _userService.GetAll();
-            
-            var respUsers = users.Select(user => new UserResponse
-            {
-                Id = user.Id,
-                RegistrationDate = user.RegistrationDate,
-                CheckedInTables = user.CheckedInTables.ToList(),
-                Rank = user.Rank
-            }).ToList();
-
-            return Ok(respUsers);
+            return Ok(_userService.GetAll());
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
     
     [HttpGet("{userId}")]
-    public ActionResult<User> GetById(int userId)
+    public ActionResult<UserResponse> GetById(int userId)
     {
         try
         {
             return Ok(_userService.GetById(userId));
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -63,21 +53,13 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = _userService.GetById(userId);
-            
-            if (user == null)
-            {
-                return NotFound($"User with ID:{userId} not found in database");
-            }
-            
-            // TODO
-            // _userService.Update(request);
+            _userService.Update(userId, request);
             return Ok("successful update");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e.Message);
-            return BadRequest("something went wrong");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 
@@ -86,22 +68,13 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = _userService.GetById(userId);
-            
-            if (user == null)
-            {
-                return NotFound($"User with ID:{userId} not found in database");
-            }
-            
-            _userService.Delete(user);
-
+            _userService.Delete(userId);
             return Ok("User successfully deleted");
         }
-        catch (Exception e)
+        catch (ExceptionBase e)
         {
-            _logger.LogError(e, "An error occurred while deleting user");
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "An error occurred while processing the request");
+            _logger.LogError(e, e.Message);
+            return e.GetResponse($"{e.Message}");
         }
     }
 }

@@ -22,7 +22,7 @@ builder.Services.AddScoped<IPairMatchRepository, PairMatchRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IServiceMethods, ServiceMethods>();
 builder.Services.AddScoped<ICheckingInService, CheckingInService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IPairMatchService, PairMatchService>();
