@@ -1,56 +1,89 @@
-import React, {useState} from 'react';
-import CheckInToTable from "../CheckInToTable/CheckInToTable.jsx";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 
-export default function TableList({tables, checkIn, setCheckIn, handleCheckIn}) {
-    const navigate = useNavigate();
-    const [checkSwitch, setCheckSwitch] = useState({
-        id: null,
-        switch: true
-    });
+const UsersList = (props) => {
 
-    const props = {
-        handleCheckIn,
-        checkIn,
-        setCheckIn,
-        checkSwitch,
-        setCheckSwitch
+    const [allUsers, setAllUsers] = useState([]);
+    const [refreshNeeded, setRefreshNeeded] = useState(false)
+
+    useEffect(() => {
+        fetch('/api/users')
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return resp.json();
+            })
+            .then(data => {
+                setAllUsers(data);
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
+            });
+    }, [refreshNeeded]);
+
+
+    const goBackHandler = () =>{
+        props.onSaveData();
     }
+
+    const deleteUserHandler = (event) => {
+        fetch(`/api/User/users/id/${event.target.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                console.log('User deleted successfully');
+                setRefreshNeeded(true);
+            })
+            .catch(error => {
+                console.error('Error deleting user:', error);
+            });
+    };
+
+
 
     return (
         <>
-            {!checkSwitch.switch ? <CheckInToTable{...props}/> : (
-                <table className={"tableList"}>
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>CheckIn</th>
-                        <th></th>
+            <h1>Users</h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Registration Date</th>
+                    <th>Rank</th>
+                    <th>Checked-in Tables</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {allUsers && allUsers.map(user => (
+                    <tr key={user.id}>
+                        <td>{user.id}</td>
+                        <td>{new Date(user.registrationDate).toLocaleDateString()}</td>
+                        <td>{user.rank}</td>
+                        <td>
+                            <ul>
+                                {user.checkedInTables && user.checkedInTables.map(table => (
+                                    <li key={table.id}>{table.name}</li>
+                                ))}
+                            </ul>
+                        </td>
+                        <td>
+                            <button onClick={deleteUserHandler} id={user.id}>Delete user</button>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
+                ))}
+                </tbody>
+            </table>
+            <button onClick={goBackHandler}>Back</button>
+        </>
+    );
 
-                    {tables && tables.map(table => (
-                        <tr key={table.id}>
-                            <td>{table.id}</td>
-                                <td>{table.name}</td>
-                                <td>
-                                    <button onClick={_ => {
-                                        setCheckIn({...checkIn, tableId: table.id});
-                                        setCheckSwitch({...checkSwitch, id: table.id, switch: !checkSwitch.switch})
-                                    }}>checkIn
-                                    </button>
-                                </td>
-                                <td>
-                                    <button onClick={_ => navigate(`table/${table.id}`)}>details</button>
-                                </td>
-                        </tr>                    
+}
 
-                        ))}
-                    </tbody>
-                </table>
-                    )}
-                    </>
-                    );
-                    }
+export default UsersList;
