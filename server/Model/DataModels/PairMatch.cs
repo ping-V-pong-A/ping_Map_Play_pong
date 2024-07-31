@@ -10,19 +10,19 @@ public class PairMatch
     public int Id { get; init; }
     
     [ForeignKey("TableId")]
-    public int TableId { get; init; }
+    public int TableId { get; set; }
     
-    public DateTime StartDate { get; init; }
-    public DateTime EndDate { get; init; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     [DeleteBehavior(DeleteBehavior.NoAction)]
     [ForeignKey("Team1Id")]
-    public Team Team1 { get; init; }
-    public int Team1Point { get; init; }
+    public Team Team1 { get; set; }
+    public int Team1Point { get; set; }
 
     [DeleteBehavior(DeleteBehavior.NoAction)]
     [ForeignKey("Team2Id")]
-    public Team Team2 { get; init; }
+    public Team Team2 { get; set; }
     public int Team2Point { get; init; }
     
     public Team Winner
