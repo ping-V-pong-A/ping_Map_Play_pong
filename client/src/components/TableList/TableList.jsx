@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import CheckInToTable from "../CheckInToTable/CheckInToTable.jsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function TableList({tables, checkIn, setCheckIn, handleCheckIn}) {
+export default function TableList({ tables, checkIn, setCheckIn, handleCheckIn }) {
     const navigate = useNavigate();
     const [checkSwitch, setCheckSwitch] = useState({
         id: null,
@@ -19,8 +19,9 @@ export default function TableList({tables, checkIn, setCheckIn, handleCheckIn}) 
 
     return (
         <>
-            {!checkSwitch.switch ? <CheckInToTable{...props}/> : (
-
+            {!checkSwitch.switch ? (
+                <CheckInToTable {...props} />
+            ) : (
                 <table className={"tableList"}>
                     <thead>
                     <tr>
@@ -31,28 +32,33 @@ export default function TableList({tables, checkIn, setCheckIn, handleCheckIn}) 
                     </tr>
                     </thead>
                     <tbody>
-
                     {tables && tables.map(table => (
                         <tr key={table.id}>
                             <td>{table.id}</td>
                             <td>{table.name}</td>
                             <td>
-                                <button onClick={_ => {
-                                    setCheckIn({...checkIn, tableId: table.id});
-                                    setCheckSwitch({...checkSwitch, id: table.id, switch: !checkSwitch.switch})
-                                }}>checkIn
-                                </button>
+                                <button onClick={() => {
+                                    setCheckIn(prevCheckIn => ({
+                                        ...prevCheckIn,
+                                        tableId: table.id,
+                                        start: "",
+                                        end: "" 
+                                    }));
+                                    setCheckSwitch(prevState => ({
+                                        ...prevState,
+                                        id: table.id,
+                                        switch: !prevState.switch
+                                    }));
+                                }}>Check In</button>
                             </td>
                             <td>
-                                <button onClick={_ => navigate(`table/${table.id}`)}>details</button>
+                                <button onClick={() => navigate(`table/${table.id}`)}>Details</button>
                             </td>
                         </tr>
-                       
-
-                        ))}
+                    ))}
                     </tbody>
                 </table>
-                    )}
-                    </>
-                    );
-                    }
+            )}
+        </>
+    );
+}

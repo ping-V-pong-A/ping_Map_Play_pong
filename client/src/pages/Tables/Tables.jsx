@@ -1,14 +1,13 @@
-import './Tables.scss'
-import React, {useState, useEffect} from 'react';
+import './Tables.scss';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import {useProfile} from "../../contexts/ProfileContext.jsx";
+import { useProfile } from "../../contexts/ProfileContext.jsx";
 
 import Map from "../../components/Map/Map.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import TableList from "../../components/TableList/TableList.jsx";
 
-const fetchAllTable = () => fetch('/api/tables')
-    .then(resp => resp.json())
+const fetchAllTable = () => fetch('/api/tables').then(resp => resp.json());
 
 const postCheckIn = (checkIn) => fetch('/api/check-ins/add', {
     method: "POST",
@@ -18,37 +17,53 @@ const postCheckIn = (checkIn) => fetch('/api/check-ins/add', {
     credentials: 'include',
     body: JSON.stringify(checkIn)
 })
-    .then((resp) => resp.json())
-    .catch((error) => console.error('Error:', error))
+    .then((response) => {
+        if (response.ok) {
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return response.json().then(data => {
+                    console.log("Success:", data);
+                });
+            } else {
+                return response.text().then(text => {
+                    console.log("Success:", text);
+                });
+            }
+        } else {
+            console.error(`Error: ${response.status} ${response.statusText}`);
+        }
+    })
+    .catch((error) => console.error('Error:', error));
 
 export default function Tables() {
-
-    const navigate = useNavigate()
-    const {profile} = useProfile();
-    const [loading, setLoading] = useState(true)
-    const [tables, setTables] = useState(null)
-    const [listMapSwitch, setListMapSwitch] = useState(true)
+    const navigate = useNavigate();
+    const { profile } = useProfile();
+    const [loading, setLoading] = useState(true);
+    const [tables, setTables] = useState(null);
+    const [listMapSwitch, setListMapSwitch] = useState(true);
 
     const [checkIn, setCheckIn] = useState({
         userId: profile ? profile.id : 1,
         tableId: 0,
-        start: "",
-        end: ""
-    })
+        startDate: "",
+        endDate: ""
+    });
 
     useEffect(() => {
-        fetchAllTable()
-            .then(tables => {
-                setLoading(false)
-                setTables(tables)
-            })
+        fetchAllTable().then(tables => {
+            setLoading(false);
+            setTables(tables);
+        });
     }, []);
 
-    const addNewTableHandler = () =>{
-        navigate('/tables/new')
-    }
+    const addNewTableHandler = () => {
+        navigate('/tables/new');
+    };
 
-    const handleCheckIn = (checkIn) => postCheckIn(checkIn).then(navigate("/tables"))
+    const handleCheckIn = (checkIn) => {
+        
+        return postCheckIn(checkIn).then(() => navigate("/tables"));
+    };
 
     const props = {
         tables,
@@ -56,22 +71,24 @@ export default function Tables() {
         checkIn,
         setCheckIn,
         handleCheckIn
-    }
+    };
 
     return (
         loading ? (
-            <Loading/>
+            <Loading />
         ) : (
             <>
                 <div className={"buttons"}>
-                    <button onClick={_ => setListMapSwitch(!listMapSwitch)}>{listMapSwitch ? "Map" : "List"}</button>
+                    <button onClick={() => setListMapSwitch(!listMapSwitch)}>
+                        {listMapSwitch ? "Map" : "List"}
+                    </button>
                     <button onClick={addNewTableHandler}>Add new table</button>
                 </div>
 
                 {listMapSwitch ?
-                    <TableList {...props}/>
+                    <TableList {...props} />
                     :
-                    <Map {...props}/>}
+                    <Map {...props} />}
             </>
         )
     );

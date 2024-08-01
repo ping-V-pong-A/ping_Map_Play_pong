@@ -29,7 +29,7 @@ export default function AddTable() {
 
     const handleCreateTable = (table) => {
         postTable(table)
-            .then(_ => navigate("/"))
+            .then(_ => navigate("/tables"))
     }
 
     const props = {

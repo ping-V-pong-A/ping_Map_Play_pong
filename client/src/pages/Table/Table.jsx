@@ -1,62 +1,62 @@
-import {useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import Loading from "../../components/Loading/Loading.jsx";
+import { useNavigate } from "react-router-dom";
 
 const getTable = (tableId) => fetch(`/api/tables/${tableId}`)
     .then(resp => resp.json())
-    .catch(err => console.error(err))
+    .catch(err => console.error(err));
 
 export default function Table() {
-    const {id} = useParams()
-    const [table, setTable] = useState()
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [table, setTable] = useState(null);
 
     useEffect(() => {
-        getTable(id).then(data => setTable(data))
-    }, []);
+        getTable(id).then(data => setTable(data));
+    }, [id]);
+
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
+        return new Date(dateString).toLocaleString('hu-HU', options).replace(',', ''); // Cseréljük le a vesszőt
+    };
     
+ 
     return (
         <>
             {table ? (
                 <div>
-                    <h1 onClick={_ => console.log(table)}>{table.id}</h1>
+                 
                     <ul>
                         <li>
                             <table>
                                 <thead>
-                                    <tr>                                          
-                                        <th><li>Table Name</li></th>                                        
-                                        <th><li>User Id</li></th>
-                                        <th><li>Start</li></th>
-                                        <th><li>End</li></th>
-                                    </tr>
+                                <tr>
+                                    <th>Table Name</th>
+                                    <th>User Id</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                </tr>
                                 </thead>
-                            </table>
-                        </li>
-                        {table.checkingIns.map(checkIn => (
-                        <li key={checkIn.id}>
-                            <table>
                                 <tbody>
-                                    <tr>
-                                        <th>
-                                            <li>{table.name}</li>
-                                        </th>
-                                        <th>
-                                            <li>{checkIn.userId}</li>
-                                        </th>
-                                        <th>
-                                            <li>{checkIn.startDate}</li>
-                                        </th>
-                                        <th>
-                                            <li>{checkIn.endDate}</li>
-                                        </th>
+                                {table.checkingIns.map(checkIn => (
+                                    <tr key={checkIn.id}>
+                                        <td>{table.name}</td>
+                                        <td>{checkIn.userId}</td>
+                                        <td>{formatDate(checkIn.startDate)}</td>
+                                        <td>{formatDate(checkIn.endDate)}</td>
                                     </tr>
+                                ))}
                                 </tbody>
                             </table>
-                        </li>                                            
-                        ))}
+                        </li>
                     </ul>
+                    <button onClick={() => navigate('/tables')}>Go back</button>
                 </div>
-            ) : <Loading/>}
+            ) : (
+                <Loading />
+            )}
         </>
-    )
+    );
 }
