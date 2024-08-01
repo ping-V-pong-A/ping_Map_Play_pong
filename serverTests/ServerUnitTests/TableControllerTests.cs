@@ -6,6 +6,7 @@ using ping_Map_Play_pong.Controllers;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.ResponseModels;
 using NUnit.Framework;
+using ping_Map_Play_pong.Model.Exceptions;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service;
 using Match = ping_Map_Play_pong.Model.DataModels.Match;
@@ -35,30 +36,55 @@ public class TableControllerTests
         {
             new Table
             {
-                Id = 1, Name = "Table 1", Coordinate = new Coordinate { Lat = 47.1234, Lon = 19.5678 },
-                LeaderBoard = new List<Match>(), PairMatchesLeaderBoard = new List<PairMatch>(),
+                Id = 1,
+                Name = "Table 1",
+                Coordinate = new Coordinate { Lat = 47.1234, Lon = 19.5678 },
+                LeaderBoard = new List<Match>(),
+                PairMatchesLeaderBoard = new List<PairMatch>(),
                 CheckingIns = new List<CheckingIn>()
             },
             new Table
             {
-                Id = 2, Name = "Table 2", Coordinate = new Coordinate { Lat = 48.1234, Lon = 20.5678 },
-                LeaderBoard = new List<Match>(), PairMatchesLeaderBoard = new List<PairMatch>(),
+                Id = 2,
+                Name = "Table 2",
+                Coordinate = new Coordinate { Lat = 48.1234, Lon = 20.5678 },
+                LeaderBoard = new List<Match>(),
+                PairMatchesLeaderBoard = new List<PairMatch>(),
                 CheckingIns = new List<CheckingIn>()
             }
         };
 
-        _tableServiceMock.Setup(service => service.GetAll()).Returns(tables);
+        
+        var tableResponses = tables.Select(table => new TableResponse
+        {
+            Id = table.Id,
+            Name = table.Name,
+            Lat = table.Coordinate.Lat,
+            Lon = table.Coordinate.Lon,
+            CheckingIns = table.CheckingIns.ToList(),
+            Matches = table.LeaderBoard.ToList(),
+            PairMatches = table.PairMatchesLeaderBoard.ToList()
+        }).ToList();
 
+        // Mock setup
+        _tableServiceMock.Setup(service => service.GetAll()).Returns(tableResponses);
+        
         // Act
         var result = _tableController.GetAll();
 
         // Assert
         Assert.IsNotNull(result, "Result is null");
         var okObjectResult = result.Result as OkObjectResult;
+        Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
 
-
+        var responseTables = okObjectResult.Value as IEnumerable<TableResponse>;
+        Assert.IsNotNull(responseTables, "Response is not IEnumerable<TableResponse>");
+        Assert.AreEqual(2, responseTables.Count(), "Expected 2 tables in response");
     }
 
+    
+    
+    
     [Test]
     public void GetById_ReturnsTable_WhenTableExists()
     {
@@ -86,13 +112,13 @@ public class TableControllerTests
 
     }
 
-
     [Test]
     public void GetById_ReturnsNotFound_WhenTableDoesNotExist()
     {
         // Arrange
         var tableId = 1;
-        _tableServiceMock.Setup(service => service.GetById(tableId)).Throws(new Exception("Table not found"));
+        _tableServiceMock.Setup(service => service.GetById(tableId))
+            .Throws(new NotFoundException($"table with id:{tableId} not exist in DB"));
 
         // Act
         var result = _tableController.GetById(tableId);
@@ -103,6 +129,7 @@ public class TableControllerTests
         Assert.AreEqual(404, notFoundResult.StatusCode);
         Assert.AreEqual($"table with id:{tableId} not exist in DB", notFoundResult.Value);
     }
+
 
     [Test]
     public async Task GetById_ReturnsTable_IfTableExists()
@@ -155,7 +182,8 @@ public class TableControllerTests
             Lon = 19.5678
         };
 
-        _tableServiceMock.Setup(service => service.PostToDb(It.IsAny<Table>()))
+      
+        _tableServiceMock.Setup(service => service.PostToDb(It.IsAny<TableRequest>()))
             .Throws(new Exception("Service exception"));
 
         // Act
@@ -165,8 +193,8 @@ public class TableControllerTests
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
         var badRequestResult = result as BadRequestObjectResult;
         Assert.AreEqual(400, badRequestResult.StatusCode);
-
     }
+
 
 
     [Test]
@@ -185,23 +213,28 @@ public class TableControllerTests
         {
             Id = tableId,
             Name = "Table 1",
-            Coordinate = new Coordinate { Lat = 47.1234, Lon = 19.5678 },
-            LeaderBoard = new List<Match>(),
-            PairMatchesLeaderBoard = new List<PairMatch>(),
-            CheckingIns = new List<CheckingIn>()
+            Coordinate = new Coordinate { Lat = 47.1234, Lon = 19.5678 }
         };
 
+       
         _tableServiceMock.Setup(service => service.GetById(tableId)).Returns(existingTable);
 
+        
+        _tableServiceMock.Setup(service => service.Update(tableId, updatedRequest)).Verifiable();
+
         // Act
-        var result = _tableController.Patch(tableId, updatedRequest);
+        var result = _tableController.Update(tableId, updatedRequest);
 
         // Assert
-        Assert.IsInstanceOf<OkObjectResult>(result);
-        var okObjectResult = result as OkObjectResult;
-        Assert.AreEqual(200, okObjectResult.StatusCode);
-
+        var okResult = result as OkObjectResult;
+        Assert.IsNotNull(okResult);
+        Assert.AreEqual(200, okResult.StatusCode);
+        
+    
+      
+        _tableServiceMock.Verify(service => service.Update(tableId, updatedRequest), Times.Once);
     }
+
 
 
     [Test]
@@ -210,18 +243,30 @@ public class TableControllerTests
         // Arrange
         var tableId = 1;
         var request = new TableRequest { Name = "Updated Name", Lat = 12.345, Lon = 45.678 };
-        _tableServiceMock.Setup(service => service.GetById(tableId)).Returns(new Table());
-        _tableServiceMock.Setup(service => service.Update(It.IsAny<Table>())).Throws(new Exception("Update failed"));
+    
+        
+        var existingTable = new Table
+        {
+            Id = tableId,
+            Name = "Old Name",
+            Coordinate = new Coordinate { Lat = 10.0, Lon = 20.0 }
+        };
+
+        _tableServiceMock.Setup(service => service.GetById(tableId)).Returns(existingTable);
+    
+        // Setup Update to throw an exception
+        _tableServiceMock.Setup(service => service.Update(tableId, It.IsAny<TableRequest>()))
+            .Throws(new Exception("Update failed"));
 
         // Act
-        var result = _tableController.Patch(tableId, request);
+        var result = _tableController.Update(tableId, request);
 
         // Assert
-     
+        Assert.IsInstanceOf<BadRequestObjectResult>(result);
         var badRequestResult = result as BadRequestObjectResult;
         Assert.AreEqual(400, badRequestResult.StatusCode);
-
-    
+        Assert.IsNotNull(badRequestResult.Value);
+        Assert.AreEqual("Update failed", badRequestResult.Value.ToString());
     }
 
 
@@ -244,8 +289,6 @@ public class TableControllerTests
     }
 
 
-
-
     [Test]
     public void Patch_NonExistingId_ReturnsNotFound()
     {
@@ -258,18 +301,21 @@ public class TableControllerTests
             Lon = 45.0
         };
 
-        _tableServiceMock.Setup(service => service.GetById(tableId)).Returns((Table)null);
+        
+        _tableServiceMock.Setup(service => service.GetById(tableId))
+            .Throws(new NotFoundException($"table with id:{tableId} not exist in DB"));
 
         // Act
-        var result = _tableController.Patch(tableId, updatedRequest);
+        var result = _tableController.Update(tableId, updatedRequest);
 
         // Assert
-        Assert.IsInstanceOf<NotFoundObjectResult>(result);
         var notFoundResult = result as NotFoundObjectResult;
+        Assert.IsNotNull(notFoundResult);
         Assert.AreEqual(404, notFoundResult.StatusCode);
-        Assert.AreEqual($"Table with id:{tableId} not found", notFoundResult.Value);
+        Assert.AreEqual($"table with id:{tableId} not exist in DB", notFoundResult.Value);
     }
 
 
-}
 
+
+}
