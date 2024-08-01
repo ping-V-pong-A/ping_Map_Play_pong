@@ -53,31 +53,36 @@ public class CheckingInService : ICheckingInService
 
         return result;
     }
-
+    
     public void PostToDb(CheckInRequest request)
     {
-        _logger.LogInformation($"Adding new CheckingIn. UserId: {request.UserId}, TableId: {request.TableId}, StartDate: {request.StartDate}, EndDate: {request.EndDate}.");
+       
+        var startDateUtc = request.StartDate.ToUniversalTime();
+        var endDateUtc = request.EndDate.ToUniversalTime();
+
+        _logger.LogInformation($"Adding new CheckingIn. UserId: {request.UserId}, TableId: {request.TableId}, StartDate: {startDateUtc}, EndDate: {endDateUtc}.");
 
         var user = _userRepository.GetById(request.UserId);
         var table = _tableRepository.GetById(request.TableId);
-        
+    
         if (user == null || table == null)
         {
             _logger.LogError($"UserId: {request.UserId} or TableId: {request.TableId} does not exist.");
             throw new NotFoundException($"UserId: {request.UserId} or TableId: {request.TableId} does not exist.");
         }
-            
+
         var newCheckingIn = new CheckingIn
         {
             UserId = user.Id,
             TableId = table.Id,
-            StartDate = request.StartDate,
-            EndDate = request.EndDate
+            StartDate = startDateUtc,
+            EndDate = endDateUtc
         };
-        
+    
         _checkingInRepository.Add(newCheckingIn);
         _logger.LogInformation($"New CheckingIn added for UserId: {request.UserId}, TableId: {request.TableId}.");
     }
+
     
     public void Update(int checkingInId, CheckInRequest request)
     {
