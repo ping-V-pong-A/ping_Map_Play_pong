@@ -6,27 +6,25 @@ using ping_Map_Play_pong.Controllers;
 using ping_Map_Play_pong.Model.DataModels;
 using ping_Map_Play_pong.Model.RequestModels;
 using ping_Map_Play_pong.Service;
+using ping_Map_Play_pong.Model.Exceptions;
 
-
-
-namespace ServerUnitTests;
-
-public class PairMatchControllerTests
+namespace ServerUnitTests
 {
-    private Mock<ILogger<PairMatchController>> _loggerMock;
-    private Mock<IPairMatchService> _pairMatchServiceMock;
-    private PairMatchController _pairMatchController;
-
-    [SetUp]
-    public void SetUp()
+    public class PairMatchControllerTests
     {
-        _loggerMock = new Mock<ILogger<PairMatchController>>();
-        _pairMatchServiceMock = new Mock<IPairMatchService>();
-        _pairMatchController = new PairMatchController(_loggerMock.Object, _pairMatchServiceMock.Object);
-    }
-    
-    
-       [Test]
+        private Mock<ILogger<PairMatchController>> _loggerMock;
+        private Mock<IPairMatchService> _pairMatchServiceMock;
+        private PairMatchController _pairMatchController;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _loggerMock = new Mock<ILogger<PairMatchController>>();
+            _pairMatchServiceMock = new Mock<IPairMatchService>();
+            _pairMatchController = new PairMatchController(_loggerMock.Object, _pairMatchServiceMock.Object);
+        }
+
+        [Test]
         public void GetAll_Returns_OkResult_With_PairMatches()
         {
             // Arrange
@@ -41,8 +39,8 @@ public class PairMatchControllerTests
             var result = _pairMatchController.GetAll();
 
             // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.NotNull(okResult);
             Assert.AreEqual(200, okResult.StatusCode);
 
             var pairMatches = okResult.Value as IEnumerable<PairMatch>;
@@ -60,32 +58,28 @@ public class PairMatchControllerTests
             var result = _pairMatchController.GetAll();
 
             // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
             var notFoundResult = result.Result as NotFoundObjectResult;
-            Assert.NotNull(notFoundResult);
             Assert.AreEqual(404, notFoundResult.StatusCode);
             Assert.AreEqual("pairPairMatches table is empty", notFoundResult.Value);
         }
 
-   
         [Test]
         public void GetAll_Returns_Ok_When_No_PairMatches_In_Database()
         {
             // Arrange
             var emptyList = new List<PairMatch>();
-
             _pairMatchServiceMock.Setup(x => x.GetAll()).Returns(emptyList);
 
             // Act
             var result = _pairMatchController.GetAll();
 
             // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.NotNull(okResult);
-
             Assert.AreEqual(200, okResult.StatusCode);
             Assert.AreEqual(emptyList, okResult.Value);
         }
-
 
         [Test]
         public void GetByDate_ReturnsMatches_OnValidDate()
@@ -103,18 +97,15 @@ public class PairMatchControllerTests
             var result = _pairMatchController.GetByDate(date);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
-            Assert.AreEqual(200, okObjectResult.StatusCode, "Status code is not 200");
+            Assert.AreEqual(200, okObjectResult.StatusCode);
             var returnedMatches = okObjectResult.Value as IEnumerable<PairMatch>;
-            Assert.IsNotNull(returnedMatches, "Returned value is not IEnumerable<Match>");
-            Assert.AreEqual(expectedMatches.Count, returnedMatches.Count(), "Number of matches does not match");
-            CollectionAssert.AreEqual(expectedMatches, returnedMatches, "Returned matches are not as expected");
+            Assert.NotNull(returnedMatches);
+            Assert.AreEqual(expectedMatches.Count, returnedMatches.Count());
+            CollectionAssert.AreEqual(expectedMatches, returnedMatches);
         }
-        
-        
-        
+
         [Test]
         public void GetByDate_ReturnsEmptyList_OnValidDateWithoutMatches()
         {
@@ -127,17 +118,15 @@ public class PairMatchControllerTests
             var result = _pairMatchController.GetByDate(date);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
-            Assert.AreEqual(200, okObjectResult.StatusCode, "Status code is not 200");
+            Assert.AreEqual(200, okObjectResult.StatusCode);
             var returnedMatches = okObjectResult.Value as IEnumerable<PairMatch>;
-            Assert.IsNotNull(returnedMatches, "Returned value is not IEnumerable<Match>");
-            Assert.AreEqual(expectedMatches.Count, returnedMatches.Count(), "Number of matches does not match");
-            CollectionAssert.AreEqual(expectedMatches, returnedMatches, "Returned matches are not as expected");
+            Assert.NotNull(returnedMatches);
+            Assert.AreEqual(expectedMatches.Count, returnedMatches.Count());
+            CollectionAssert.AreEqual(expectedMatches, returnedMatches);
         }
 
-        
         [Test]
         public void GetById_ReturnsMatch_OnValidId()
         {
@@ -150,17 +139,15 @@ public class PairMatchControllerTests
             var result = _pairMatchController.GetById(pairMatchId);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
-            Assert.AreEqual(200, okObjectResult.StatusCode, "Status code is not 200");
+            Assert.AreEqual(200, okObjectResult.StatusCode);
             var returnedMatch = okObjectResult.Value as PairMatch;
-            Assert.IsNotNull(returnedMatch, "Returned value is not PairMatch");
-            Assert.AreEqual(expectedMatch.Id, returnedMatch.Id, "Match ID does not match");
-            Assert.AreEqual(expectedMatch.StartDate, returnedMatch.StartDate, "Match StartDate does not match");
+            Assert.NotNull(returnedMatch);
+            Assert.AreEqual(expectedMatch.Id, returnedMatch.Id);
+            Assert.AreEqual(expectedMatch.StartDate, returnedMatch.StartDate);
         }
 
-        
         [Test]
         public void GetById_ReturnsNotFound_OnInvalidId()
         {
@@ -172,15 +159,12 @@ public class PairMatchControllerTests
             var result = _pairMatchController.GetById(pairMatchId);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
             var notFoundResult = result.Result as NotFoundObjectResult;
-            Assert.IsNotNull(notFoundResult, "Result is not NotFoundObjectResult");
-            Assert.AreEqual(404, notFoundResult.StatusCode, "Status code is not 404");
-            Assert.AreEqual($"pairPairMatch with id:{pairMatchId} not exist in DB", notFoundResult.Value, "NotFound message does not match");
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual($"pairPairMatch with id:{pairMatchId} not exist in DB", notFoundResult.Value);
         }
 
-        
-        
         [Test]
         public void Post_ReturnsOk_OnSuccessfulAddition()
         {
@@ -192,8 +176,8 @@ public class PairMatchControllerTests
                 Team1Player2Id = 20,
                 Team2Player1Id = 30,
                 Team2Player2Id = 40,
-                StartTime = DateTime.UtcNow,
-                EndTime = DateTime.UtcNow.AddHours(1)
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddHours(1)
             };
             _pairMatchServiceMock.Setup(service => service.PostToDb(request)).Verifiable();
 
@@ -201,18 +185,14 @@ public class PairMatchControllerTests
             var result = _pairMatchController.Post(request);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
-            Assert.AreEqual(200, okObjectResult.StatusCode, "Status code is not 200");
-            Assert.AreEqual("success added new pairPairMatch", okObjectResult.Value, "Returned message is not as expected");
-
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.AreEqual("success added new pairPairMatch", okObjectResult.Value);
 
             _pairMatchServiceMock.Verify(service => service.PostToDb(request), Times.Once);
         }
-        
-        
-        
+
         [Test]
         public void Post_ReturnsBadRequest_OnException()
         {
@@ -224,8 +204,8 @@ public class PairMatchControllerTests
                 Team1Player2Id = 20,
                 Team2Player1Id = 30,
                 Team2Player2Id = 40,
-                StartTime = DateTime.UtcNow,
-                EndTime = DateTime.UtcNow.AddHours(1)
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddHours(1)
             };
             _pairMatchServiceMock.Setup(service => service.PostToDb(request)).Throws(new Exception("Error adding match"));
 
@@ -233,148 +213,97 @@ public class PairMatchControllerTests
             var result = _pairMatchController.Post(request);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
             var badRequestObjectResult = result.Result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult, "Result is not BadRequestObjectResult");
-            Assert.AreEqual(400, badRequestObjectResult.StatusCode, "Status code is not 400");
-            Assert.AreEqual("un success added new pairPairMatch", badRequestObjectResult.Value, "Returned message is not as expected");
+            Assert.AreEqual(400, badRequestObjectResult.StatusCode);
+            Assert.AreEqual("un success added new pairPairMatch", badRequestObjectResult.Value);
 
-            
             _pairMatchServiceMock.Verify(service => service.PostToDb(request), Times.Once);
         }
 
-
-        
         [Test]
         public void Update_ReturnsOk_OnSuccessfulUpdate()
         {
             // Arrange
             var pairMatchId = 1;
             var existingPairMatch = new PairMatch { Id = pairMatchId };
+            var request = new PairMatchRequest { /* fill in with appropriate data */ };
+
             _pairMatchServiceMock.Setup(service => service.GetById(pairMatchId)).Returns(existingPairMatch);
+            _pairMatchServiceMock.Setup(service => service.Update(pairMatchId, request)).Verifiable();
 
             // Act
-            var result = _pairMatchController.Update(pairMatchId);
+            var result = _pairMatchController.Update(pairMatchId, request);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
-            Assert.AreEqual(200, okObjectResult.StatusCode, "Status code is not 200");
-            Assert.AreEqual("successful update", okObjectResult.Value, "Returned message is not as expected");
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.AreEqual($"successfully updated pairMatch with id: {pairMatchId}", okObjectResult.Value);
 
-            
-            _pairMatchServiceMock.Verify(service => service.GetById(pairMatchId), Times.Once);
-            _pairMatchServiceMock.Verify(service => service.Update(existingPairMatch), Times.Once);
+            _pairMatchServiceMock.Verify(service => service.Update(pairMatchId, request), Times.Once);
         }
 
-        
-        
         [Test]
-        public void Update_ReturnsNotFound_WhenPairMatchDoesNotExist()
+        public void Update_ReturnsNotFound_OnInvalidId()
         {
             // Arrange
             var pairMatchId = 1;
-            _pairMatchServiceMock.Setup(service => service.GetById(pairMatchId)).Returns((PairMatch)null);
+            var request = new PairMatchRequest { /* fill in with appropriate data */ };
+
+            _pairMatchServiceMock.Setup(service => service.GetById(pairMatchId)).Throws(new Exception("Match not found"));
 
             // Act
-            var result = _pairMatchController.Update(pairMatchId);
+            var result = _pairMatchController.Update(pairMatchId, request);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
-            var notFoundObjectResult = result.Result as NotFoundObjectResult;
-            Assert.IsNotNull(notFoundObjectResult, "Result is not NotFoundObjectResult");
-            Assert.AreEqual(404, notFoundObjectResult.StatusCode, "Status code is not 404");
-            Assert.AreEqual($"match with id:{pairMatchId} not exist in DB", notFoundObjectResult.Value, "Returned message is not as expected");
-
-            
-            _pairMatchServiceMock.Verify(service => service.GetById(pairMatchId), Times.Once);
-            _pairMatchServiceMock.Verify(service => service.Update(It.IsAny<PairMatch>()), Times.Never);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
+            var notFoundResult = result.Result as NotFoundObjectResult;
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual($"pairPairMatch with id:{pairMatchId} not exist in DB", notFoundResult.Value);
         }
 
-        
-        
+
+
         [Test]
-        public void Delete_ReturnsOk_OnSuccessfulDelete()
+        public void Delete_ReturnsOk_OnSuccessfulDeletion()
         {
             // Arrange
             var pairMatchId = 1;
             var existingPairMatch = new PairMatch { Id = pairMatchId };
             _pairMatchServiceMock.Setup(service => service.GetById(pairMatchId)).Returns(existingPairMatch);
-            _pairMatchServiceMock.Setup(service => service.DeleteFromDb(existingPairMatch)).Verifiable();
+            _pairMatchServiceMock.Setup(service => service.DeleteFromDb(pairMatchId)).Verifiable();
 
             // Act
             var result = _pairMatchController.Delete(pairMatchId);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult, "Result is not OkObjectResult");
-            Assert.AreEqual(200, okObjectResult.StatusCode, "Status code is not 200");
-            Assert.AreEqual("successful delete", okObjectResult.Value, "Returned message is not as expected");
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.AreEqual($"successful delete", okObjectResult.Value);
 
-           
-            _pairMatchServiceMock.Verify(service => service.GetById(pairMatchId), Times.Once);
-            _pairMatchServiceMock.Verify(service => service.DeleteFromDb(existingPairMatch), Times.Once);
+          
+            _pairMatchServiceMock.Verify(service => service.DeleteFromDb(pairMatchId), Times.Once);
         }
 
-        
         [Test]
-        public void Delete_ReturnsNotFound_WhenPairMatchDoesNotExist()
+        public void Delete_ReturnsNotFound_OnInvalidId()
         {
             // Arrange
             var pairMatchId = 1;
             _pairMatchServiceMock.Setup(service => service.GetById(pairMatchId)).Returns((PairMatch)null);
+            _pairMatchServiceMock.Setup(service => service.DeleteFromDb(pairMatchId)).Throws(new NotFoundException($"match with id:{pairMatchId} not exist in DB"));
 
             // Act
             var result = _pairMatchController.Delete(pairMatchId);
 
             // Assert
-            Assert.IsNotNull(result, "Result is null");
-            var notFoundObjectResult = result.Result as NotFoundObjectResult;
-            Assert.IsNotNull(notFoundObjectResult, "Result is not NotFoundObjectResult");
-            Assert.AreEqual(404, notFoundObjectResult.StatusCode, "Status code is not 404");
-            Assert.AreEqual($"match with id:{pairMatchId} not exist in DB", notFoundObjectResult.Value, "Returned message is not as expected");
-
-            
-            _pairMatchServiceMock.Verify(service => service.GetById(pairMatchId), Times.Once);
-            _pairMatchServiceMock.Verify(service => service.DeleteFromDb(It.IsAny<PairMatch>()), Times.Never);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
+            var notFoundResult = result.Result as NotFoundObjectResult;
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual($"match with id:{pairMatchId} not exist in DB", notFoundResult.Value);
         }
 
-        
-        
-        [Test]
-        public void Delete_ReturnsBadRequest_OnException()
-        {
-            // Arrange
-            var pairMatchId = 1;
-            var existingPairMatch = new PairMatch { Id = pairMatchId };
-            _pairMatchServiceMock.Setup(service => service.GetById(pairMatchId)).Returns(existingPairMatch);
-            _pairMatchServiceMock.Setup(service => service.DeleteFromDb(existingPairMatch)).Throws(new Exception("Error deleting match"));
-
-            // Act
-            var result = _pairMatchController.Delete(pairMatchId);
-
-            // Assert
-            Assert.IsNotNull(result, "Result is null");
-            var badRequestObjectResult = result.Result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult, "Result is not BadRequestObjectResult");
-            Assert.AreEqual(400, badRequestObjectResult.StatusCode, "Status code is not 400");
-            Assert.AreEqual("something went wrong", badRequestObjectResult.Value, "Returned message is not as expected");
-
-           
-            _pairMatchServiceMock.Verify(service => service.GetById(pairMatchId), Times.Once);
-            _pairMatchServiceMock.Verify(service => service.DeleteFromDb(existingPairMatch), Times.Once);
-        }
-
+    }
 }
-
-
-
-
-    
-
-    
-    
-    
-    
